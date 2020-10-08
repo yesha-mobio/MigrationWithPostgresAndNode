@@ -8,9 +8,8 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      tbl_role.hasOne(models.tbl_user, {
-        foreignKey: "role_id",
-        as: "role",
+      tbl_role.hasMany(models.tbl_user, {
+        foreignKey: "id",
       });
       // define association here
     }

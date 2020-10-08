@@ -8,18 +8,16 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      tbl_bundle.belongsTo(models.tbl_user, {
-        foreignKey: "created_by",
-        as: "bundleCreatedBy",
-      });
-      tbl_bundle.belongsTo(models.tbl_user, {
-        foreignKey: "updated_by",
-        as: "bundleUpdatedBy",
-      });
-      tbl_bundle.belongsToMany(models.tbl_product, {
-        foreignKey: "bundle_id",
-        through: "tbl_bundle_product",
-        as: "bundleProducts",
+      // tbl_bundle.belongsTo(models.tbl_user, {
+      //   foreignKey: "created_by",
+      //   as: "bundleCreatedBy",
+      // });
+      // tbl_bundle.belongsTo(models.tbl_user, {
+      //   foreignKey: "updated_by",
+      //   as: "bundleUpdatedBy",
+      // });
+      tbl_bundle.hasMany(models.tbl_bundle_product, {
+        foreignKey: "id",
       });
       // define association here
     }
