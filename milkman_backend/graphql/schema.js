@@ -77,7 +77,7 @@ const typeDefs = gql`
   type Mutation {
     createRole(name: String!): Role
     deleteRole(id: ID!): Role
-    updateRole(name: String, id: ID!): Role
+    updateRole(name: String!, id: ID!): Role
 
     createUser(
       name: String!
@@ -87,24 +87,24 @@ const typeDefs = gql`
       role_id: Int!
     ): User
     deleteUser(id: ID!): User
-    updateUser(name: String, email: String, address: String, id: ID!): User
+    updateUser(name: String!, email: String!, address: String!, id: ID!): User
 
     createBundle(name: String!, description: String!): Bundle
     deleteBundle(id: ID!): Bundle
-    updateBundle(name: String, description: String, id: ID!): Bundle
+    updateBundle(name: String!, description: String!, id: ID!): Bundle
 
     createProduct(name: String!, description: String!, price: Float!): Product
     deleteProduct(id: ID!): Product
     updateProduct(
-      name: String
-      description: String
-      price: Float
+      name: String!
+      description: String!
+      price: Float!
       id: ID!
     ): Product
 
-    createBundleProduct(bundle_id: Int!, product_id: Int!): BundleProduct
+    createBundleProduct(bundle_id: ID!, product_id: ID!): BundleProduct
     deleteBundleProduct(id: ID!): BundleProduct
-    updateBundleProduct(bundle_id: Int, product_id: Int, id: ID!): BundleProduct
+    updateBundleProduct(bundle_id: ID!, product_id: ID!, id: ID!): BundleProduct
 
     signin(email: String!, password: String!): LoginResponse!
     verifyToken(token: String!): LoginResponse!
