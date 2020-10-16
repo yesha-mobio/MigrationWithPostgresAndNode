@@ -143,10 +143,10 @@ const resolvers = {
       context
     ) => {
       try {
-        const userExists = await models.tbl_user.findOne({ email });
-        if (userExists) {
-          throw new Error("User is already exists...!!");
-        }
+        // const userExists = await models.tbl_user.findOne({ email });
+        // if (userExists) {
+        //   throw new Error("User is already exists...!!");
+        // }
         const user = await models.tbl_user.create({
           name,
           email,
@@ -295,7 +295,7 @@ const resolvers = {
     },
     signin: async (root, { email, password }, context) => {
       const user = await models.tbl_user.findOne({ where: { email } });
-      if (!user) {
+      if (user) {
         throw new Error("User does not exists..!!");
       }
 
