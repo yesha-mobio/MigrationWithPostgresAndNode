@@ -1,0 +1,6 @@
+1. Authentication --> Done
+2. Validation --> Done
+3. isAdmin middleware
+4. View Data
+5. Update Data
+6. Image Uploading

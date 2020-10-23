@@ -11,27 +11,27 @@ import {
   Button,
 } from "reactstrap";
 
-import Header from "../../components/Core/header";
-import BundleTableRow from "../../components/Bundle/bundleTableRow";
-import { getAllBundles } from "../../queries/bundle";
+import Header from "../Core/header";
+import BundleProductTableRow from "./bundleProductTableRow";
+import { getAllBundleProducts } from "../../queries/bundleProduct";
 import { withRouter } from "react-router-dom";
 
-class DisplayBundle extends Component {
+class DisplayBundleProduct extends Component {
   constructor(props) {
     super();
     this.goBackBowser = this.goBackBowser.bind(this);
   }
 
   goBackBowser() {
-    this.props.history.push("/bundle");
+    this.props.history.push("/bundleProduct");
   }
 
-  displayBundlesHandler() {
+  displayBundleProductsHandler() {
     var data = this.props.data;
 
     if (!data.loading) {
-      return data.getAllBundles.map((bundle, i) => {
-        return <BundleTableRow key={i} obj={bundle} />;
+      return data.getAllBundleProducts.map((item, i) => {
+        return <BundleProductTableRow key={i} obj={item} />;
       });
     }
   }
@@ -51,19 +51,19 @@ class DisplayBundle extends Component {
                     background: "#1ABC9C",
                   }}
                 >
-                  <h5>List of Bundles</h5>
+                  <h5>List of Bundle-Products</h5>
                 </CardHeader>
                 <CardBody>
                   <Table bordered style={{ textAlign: "center" }}>
                     <thead>
                       <tr>
                         <th>Id</th>
-                        <th>Name</th>
-                        <th>Description</th>
+                        <th>Bundle</th>
+                        <th>Product</th>
                         <th colSpan="3">Actions</th>
                       </tr>
                     </thead>
-                    <tbody>{this.displayBundlesHandler()}</tbody>
+                    <tbody>{this.displayBundleProductsHandler()}</tbody>
                   </Table>
                   <Button
                     onClick={this.goBackBowser}
@@ -85,4 +85,4 @@ class DisplayBundle extends Component {
   }
 }
 
-export default withRouter(graphql(getAllBundles)(DisplayBundle));
+export default withRouter(graphql(getAllBundleProducts)(DisplayBundleProduct));

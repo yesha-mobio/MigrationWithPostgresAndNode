@@ -18,6 +18,7 @@ const typeDefs = gql`
     password: String
     role_id: Int
     roles: Role
+    token: String
     createdAt: TimeStamp
     updatedAt: TimeStamp
   }
@@ -49,10 +50,13 @@ const typeDefs = gql`
     updatedAt: TimeStamp
   }
 
+  type RegisterResponse {
+    user: User!
+  }
+
   type LoginResponse {
-    token: String
-    userId: ID
-    userEmail: String
+    token: String!
+    user: User!
   }
 
   type Query {
@@ -61,7 +65,7 @@ const typeDefs = gql`
     getAllRoles: [Role!]!
     getRoleById(id: ID!): Role
 
-    getAllUsers: [User!]!
+    getAllUsers: [User]!
     getUserById(id: ID!): User
 
     getAllBundles: [Bundle!]!
@@ -72,6 +76,8 @@ const typeDefs = gql`
 
     getAllBundleProducts: [BundleProduct!]!
     getBundleProductById(id: ID!): BundleProduct
+
+    signout: User
   }
 
   type Mutation {
@@ -85,7 +91,7 @@ const typeDefs = gql`
       address: String!
       password: String!
       role_id: ID!
-    ): User
+    ): RegisterResponse!
     deleteUser(id: ID!): User
     updateUser(name: String!, email: String!, address: String!, id: ID!): User
 

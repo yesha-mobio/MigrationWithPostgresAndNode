@@ -23,50 +23,52 @@ class AddProduct extends Component {
     this.state = {
       name: "",
       description: "",
-      price: "",
+      price: 0,
       error: "",
       success: false,
+      errorMessage: "",
     };
-    this.onChnageName = this.onChnageName.bind(this);
-    this.onChnageDescription = this.onChnageDescription.bind(this);
-    this.onChnagePrice = this.onChnagePrice.bind(this);
+    this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.goBackBowser = this.goBackBowser.bind(this);
   }
 
-  onChnageName(event) {
-    this.setState({
-      name: event.target.value,
-    });
-  }
-
-  onChnageDescription(event) {
-    this.setState({
-      description: event.target.value,
-    });
-  }
-
-  onChnagePrice(event) {
-    this.setState({
-      price: parseFloat(event.target.value),
-    });
-  }
+  onChange = (event) => {
+    const { name, value } = event.target;
+    this.setState({ [name]: value });
+  };
 
   onSubmit(event) {
     event.preventDefault();
-    this.setState({
-      error: false,
-      success: true,
-    });
-    this.props.createProduct({
-      variables: {
-        name: this.state.name,
-        description: this.state.description,
-        price: this.state.price,
-      },
-      refetchQueries: [{ query: getAllProducts }],
-    });
-    // this.props.history.push("/displayProducts");
+    const Price = parseFloat(this.state.price);
+    this.props
+      .createProduct({
+        variables: {
+          name: this.state.name,
+          description: this.state.description,
+          price: Price,
+        },
+        refetchQueries: [{ query: getAllProducts }],
+      })
+      .then(() => {
+        this.setState({
+          error: false,
+          success: true,
+          name: "",
+          description: "",
+          price: 0,
+          errorMessage: "",
+        });
+      })
+      .catch((err) => {
+        if (err) {
+          this.setState({
+            error: true,
+            success: false,
+            errorMessage: err.message.slice(22),
+          });
+        }
+      });
   }
 
   goBackBowser() {
@@ -74,6 +76,87 @@ class AddProduct extends Component {
   }
 
   render() {
+    const addProductForm = () => {
+      return (
+        <Container>
+          <Row>
+            <Col sm="12">
+              <Card style={{ marginTop: "50px" }}>
+                <CardHeader
+                  style={{
+                    textAlign: "center",
+                    color: "#BC1A4B",
+                    background: "#1ABC9C",
+                  }}
+                >
+                  <h5>Add a new Product</h5>
+                </CardHeader>
+                {successMessage()}
+                {errorMessage()}
+                <CardBody>
+                  <Form onSubmit={this.onSubmit}>
+                    <FormGroup>
+                      <Label for="productName">Name</Label>
+                      <Input
+                        type="text"
+                        name="name"
+                        id="productName"
+                        placeholder="Enter the name of the Product"
+                        onChange={this.onChange}
+                        value={this.state.name}
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <Label for="productDescription">Description</Label>
+                      <Input
+                        type="text"
+                        name="description"
+                        id="productDescription"
+                        placeholder="Enter the Description"
+                        onChange={this.onChange}
+                        value={this.state.description}
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <Label for="productPrice">Price</Label>
+                      <Input
+                        type="text"
+                        name="price"
+                        id="productPrice"
+                        placeholder="Enter the Price"
+                        onChange={this.onChange}
+                        value={this.state.price}
+                      />
+                    </FormGroup>
+                    <Button
+                      style={{
+                        background: "#1ABC9C",
+                        color: "#BC1A4B",
+                        borderColor: "#1ABC9C",
+                      }}
+                    >
+                      <b>Add New Product</b>
+                    </Button>
+                    &nbsp; &nbsp;
+                    <Button
+                      onClick={this.goBackBowser}
+                      style={{
+                        background: "#BC1A4B",
+                        color: "#1ABC9C",
+                        borderColor: "#BC1A4B",
+                      }}
+                    >
+                      <b>List all Products</b>
+                    </Button>
+                  </Form>
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
+      );
+    };
+
     const successMessage = () => {
       return (
         <div className="row">
@@ -103,88 +186,10 @@ class AddProduct extends Component {
                 marginTop: "10px",
               }}
             >
-              {this.state.error}
+              {this.state.errorMessage}
             </div>
           </div>
         </div>
-      );
-    };
-
-    const addProductForm = () => {
-      return (
-        <Container>
-          <Row>
-            <Col sm="12">
-              <Card style={{ marginTop: "50px" }}>
-                <CardHeader
-                  style={{
-                    textAlign: "center",
-                    color: "#BC1A4B",
-                    background: "#1ABC9C",
-                  }}
-                >
-                  <h5>Add a new Product</h5>
-                </CardHeader>
-                {successMessage()}
-                {errorMessage()}
-                <CardBody>
-                  <Form onSubmit={this.onSubmit}>
-                    <FormGroup>
-                      <Label for="productName">Name</Label>
-                      <Input
-                        type="text"
-                        name="name"
-                        id="productName"
-                        placeholder="Enter the name of the Product"
-                        onChange={this.onChnageName}
-                      />
-                    </FormGroup>
-                    <FormGroup>
-                      <Label for="productDescription">Description</Label>
-                      <Input
-                        type="text"
-                        name="description"
-                        id="productDescription"
-                        placeholder="Enter the Description"
-                        onChange={this.onChnageDescription}
-                      />
-                    </FormGroup>
-                    <FormGroup>
-                      <Label for="productPrice">Price</Label>
-                      <Input
-                        type="text"
-                        name="price"
-                        id="productPrice"
-                        placeholder="Enter the Price"
-                        onChange={this.onChnagePrice}
-                      />
-                    </FormGroup>
-                    <Button
-                      style={{
-                        background: "#1ABC9C",
-                        color: "#BC1A4B",
-                        borderColor: "#1ABC9C",
-                      }}
-                    >
-                      <b>Add New Product</b>
-                    </Button>
-                    &nbsp; &nbsp;
-                    <Button
-                      onClick={this.goBackBowser}
-                      style={{
-                        background: "#BC1A4B",
-                        color: "#1ABC9C",
-                        borderColor: "#BC1A4B",
-                      }}
-                    >
-                      <b>List all Products</b>
-                    </Button>
-                  </Form>
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
       );
     };
 

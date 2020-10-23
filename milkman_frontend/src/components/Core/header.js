@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+// import { graphql } from "react-apollo";
 import {
   Collapse,
   Navbar,
@@ -8,9 +9,11 @@ import {
   NavItem,
   NavLink,
 } from "reactstrap";
+// import { signout } from "../../queries/auth";
 
 const Header = (props) => {
   const [isOpen, setIsOpen] = useState(false);
+  // const [isSignIn, setIsSignIn] = useState(false);
 
   const toggle = () => setIsOpen(!isOpen);
 
@@ -49,8 +52,18 @@ const Header = (props) => {
               </NavLink>
             </NavItem>
             <NavItem>
+              <NavLink href="/bundleProduct">
+                <b>Bundle-Product</b>
+              </NavLink>
+            </NavItem>
+            <NavItem>
               <NavLink href="/allUsers">
                 <b>User</b>
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="/signin">
+                <b>Signout</b>
               </NavLink>
             </NavItem>
           </Nav>
@@ -60,4 +73,5 @@ const Header = (props) => {
   );
 };
 
+// export default graphql(signout)(Header);
 export default Header;

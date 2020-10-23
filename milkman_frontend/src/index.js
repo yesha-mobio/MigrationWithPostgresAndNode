@@ -9,6 +9,7 @@ import { ApolloProvider } from "react-apollo";
 // Apollo Cient Set-Up
 const client = new ApolloClient({
   uri: process.env.REACT_APP_BASE_URI,
+  // credentials: "include",
 });
 
 ReactDOM.render(

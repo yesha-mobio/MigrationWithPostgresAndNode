@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { graphql } from "react-apollo";
 import Header from "../../components/Core/header";
+import { flowRight as compose } from "lodash";
 import {
   Card,
   CardHeader,
@@ -13,17 +14,21 @@ import {
   Container,
   Row,
   Col,
-  // Alert,
 } from "reactstrap";
 
-import { createBundle, getAllBundles } from "../../queries/bundle";
+import {
+  createBundleProduct,
+  getAllBundleProducts,
+} from "../../queries/bundleProduct";
+import { getAllBundles } from "../../queries/bundle";
+import { getAllProducts } from "../../queries/product";
 
-class AddBundle extends Component {
+class AddBundleProduct extends Component {
   constructor(props) {
     super();
     this.state = {
-      name: "",
-      description: "",
+      bundle_id: "",
+      product_id: "",
       error: "",
       success: false,
       errorMessage: "",
@@ -31,6 +36,8 @@ class AddBundle extends Component {
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.goBackBowser = this.goBackBowser.bind(this);
+    this.displayBundles = this.displayBundles.bind(this);
+    this.displayProducts = this.displayProducts.bind(this);
   }
 
   onChange = (event) => {
@@ -38,22 +45,54 @@ class AddBundle extends Component {
     this.setState({ [name]: value });
   };
 
+  displayBundles() {
+    var data = this.props.getAllBundles;
+    // console.log(data);
+    if (data.loading) {
+      return "loading...!!";
+    } else {
+      return data.getAllBundles.map((bundle) => {
+        return (
+          <option key={bundle.id} value={bundle.id}>
+            {bundle.name}
+          </option>
+        );
+      });
+    }
+  }
+
+  displayProducts() {
+    var data = this.props.getAllProducts;
+    // console.log(this.props.data);
+    if (data.loading) {
+      return "loading...!!";
+    } else {
+      return data.getAllProducts.map((product) => {
+        return (
+          <option key={product.id} value={product.id}>
+            {product.name}
+          </option>
+        );
+      });
+    }
+  }
+
   onSubmit = (event) => {
     event.preventDefault();
     this.props
-      .createBundle({
+      .createBundleProduct({
         variables: {
-          name: this.state.name,
-          description: this.state.description,
+          bundle_id: this.state.bundle_id,
+          product_id: this.state.product_id,
         },
-        refetchQueries: [{ query: getAllBundles }],
+        refetchQueries: [{ query: getAllBundleProducts }],
       })
       .then(() => {
         this.setState({
           error: false,
           success: true,
-          name: "",
-          description: "",
+          bundle_id: "",
+          product_id: "",
           errorMessage: "",
         });
       })
@@ -69,11 +108,11 @@ class AddBundle extends Component {
   };
 
   goBackBowser() {
-    this.props.history.push("/displayBundles");
+    this.props.history.push("/displayBundleProducts");
   }
 
   render() {
-    const addBundleForm = () => {
+    const addBundleProductForm = () => {
       return (
         <Container>
           <Row>
@@ -86,40 +125,39 @@ class AddBundle extends Component {
                     background: "#1ABC9C",
                   }}
                 >
-                  <h5>Add a new Bundle</h5>
+                  <h5>Add a new Bundle-Product</h5>
                 </CardHeader>
                 {successMessage()}
                 {errorMessage()}
-                {/* <Alert
-                  color="danger"
-                  className="col-md-6 offset-sm-3 text-left"
-                  style={{ marginTop: "30px" }}
-                >
-                  I am an alert and I can be dismissed!
-                </Alert> */}
                 <CardBody>
                   <Form onSubmit={this.onSubmit}>
                     <FormGroup>
-                      <Label for="bundleName">Name</Label>
+                      <Label for="bundle">Bundle</Label>
                       <Input
-                        type="text"
-                        name="name"
-                        id="bundleName"
-                        placeholder="Enter the name of the Bundle"
+                        type="select"
+                        name="bundle_id"
+                        id="bundle"
+                        placeholder="Select the Bundle"
                         onChange={this.onChange}
-                        value={this.state.name}
-                      />
+                        value={this.state.bundle_id}
+                      >
+                        <option>Select Bundle</option>
+                        {this.displayBundles()}
+                      </Input>
                     </FormGroup>
                     <FormGroup>
-                      <Label for="bundleDescription">Description</Label>
+                      <Label for="product">Product</Label>
                       <Input
-                        type="text"
-                        name="description"
-                        id="bundleDescription"
-                        placeholder="Enter the Description"
+                        type="select"
+                        name="product_id"
+                        id="product"
+                        placeholder="Select the Product"
                         onChange={this.onChange}
-                        value={this.state.description}
-                      />
+                        value={this.state.product_id}
+                      >
+                        <option>Select Product</option>
+                        {this.displayProducts()}
+                      </Input>
                     </FormGroup>
                     <Button
                       style={{
@@ -128,7 +166,7 @@ class AddBundle extends Component {
                         borderColor: "#1ABC9C",
                       }}
                     >
-                      <b>Add New Bundle</b>
+                      <b>Add New Bundle-Product</b>
                     </Button>
                     &nbsp; &nbsp;
                     <Button
@@ -139,7 +177,7 @@ class AddBundle extends Component {
                         borderColor: "#BC1A4B",
                       }}
                     >
-                      <b>List all Bundles</b>
+                      <b>List all Bundle-Products</b>
                     </Button>
                   </Form>
                 </CardBody>
@@ -161,7 +199,7 @@ class AddBundle extends Component {
                 marginTop: "10px",
               }}
             >
-              Bundle is added...!
+              Bundle-Product is added...!
             </div>
           </div>
         </div>
@@ -191,10 +229,14 @@ class AddBundle extends Component {
     return (
       <div>
         <Header />
-        {addBundleForm()}
+        {addBundleProductForm()}
       </div>
     );
   }
 }
 
-export default graphql(createBundle, { name: "createBundle" })(AddBundle);
+export default compose(
+  graphql(getAllBundles, { name: "getAllBundles" }),
+  graphql(getAllProducts, { name: "getAllProducts" }),
+  graphql(createBundleProduct, { name: "createBundleProduct" })
+)(AddBundleProduct);
