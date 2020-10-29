@@ -15,6 +15,7 @@ import Header from "../../components/Core/header";
 import ProductTableRow from "../../components/Product/productTableRoe";
 import { getAllProducts } from "../../queries/product";
 import { withRouter } from "react-router-dom";
+import { isAuthenticated } from "../../authentication/authentication";
 
 class DisplayProduct extends Component {
   constructor(props) {
@@ -38,9 +39,8 @@ class DisplayProduct extends Component {
   }
 
   render() {
-    return (
-      <div>
-        <Header />
+    const DisplayProducts =
+      isAuthenticated() && isAuthenticated().user.role_id === 1 ? (
         <Container>
           <Row>
             <Col sm="12">
@@ -82,6 +82,15 @@ class DisplayProduct extends Component {
             </Col>
           </Row>
         </Container>
+      ) : (
+        <h1 style={{ textAlign: "center", marginTop: "50px", color: "red" }}>
+          You are not Authenticated...!!
+        </h1>
+      );
+    return (
+      <div>
+        <Header />
+        {DisplayProducts}
       </div>
     );
   }

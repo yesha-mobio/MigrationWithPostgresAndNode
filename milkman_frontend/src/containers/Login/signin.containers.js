@@ -15,17 +15,22 @@ import {
   Col,
 } from "reactstrap";
 import { signin } from "../../queries/auth";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
+import {
+  authenticate,
+  isAuthenticated,
+} from "../../authentication/authentication";
 
 class Signin extends Component {
   constructor(props) {
     super();
     this.state = {
-      email: "",
-      password: "",
+      email: "yesha@test.com",
+      password: "yesha123456",
       error: "",
       success: false,
       errorMessage: "",
+      didRedirect: false,
     };
 
     this.onChange = this.onChange.bind(this);
@@ -47,15 +52,17 @@ class Signin extends Component {
           password: this.state.password,
         },
       })
-      .then(() => {
-        this.setState({
-          error: false,
-          success: true,
-          email: "",
-          password: "",
-          errorMessage: "",
+      .then((response) => {
+        authenticate(response, () => {
+          this.setState({
+            error: false,
+            success: true,
+            email: "",
+            password: "",
+            errorMessage: "",
+            didRedirect: true,
+          });
         });
-        this.props.history.push("/");
       })
       .catch((err) => {
         if (err) {
@@ -69,6 +76,20 @@ class Signin extends Component {
   };
 
   render() {
+    const { user } = isAuthenticated();
+    const performRedirect = () => {
+      if (this.state.didRedirect) {
+        if (user && user.role_id === 1) {
+          return <Redirect to="/admin/dashboard" />;
+        } else {
+          return <Redirect to="/signin" />;
+        }
+      }
+      if (isAuthenticated()) {
+        return <Redirect to="/" />;
+      }
+    };
+
     const signInForm = () => {
       return (
         <Container>
@@ -84,7 +105,6 @@ class Signin extends Component {
                 >
                   <h5>Please Login Here</h5>
                 </CardHeader>
-                {successMessage()}
                 {errorMessage()}
                 <CardBody>
                   <Form onSubmit={this.onSubmit}>
@@ -132,24 +152,6 @@ class Signin extends Component {
       );
     };
 
-    const successMessage = () => {
-      return (
-        <div className="row">
-          <div className="col-md-6 offset-sm-3 text-left">
-            <div
-              className="alert alert-success"
-              style={{
-                display: this.state.success ? "" : "none",
-                marginTop: "10px",
-              }}
-            >
-              Login successfully...!!
-            </div>
-          </div>
-        </div>
-      );
-    };
-
     const errorMessage = () => {
       return (
         <div className="row">
@@ -172,6 +174,7 @@ class Signin extends Component {
       <div>
         <Header />
         {signInForm()}
+        {performRedirect()}
       </div>
     );
   }

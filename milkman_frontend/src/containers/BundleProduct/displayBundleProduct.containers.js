@@ -11,35 +11,35 @@ import {
   Button,
 } from "reactstrap";
 
-import Header from "../Core/header";
-import BundleTableRow from "./bundleTableRow";
-import { getAllBundles } from "../../queries/bundle";
+import Header from "../../components/Core/header";
+import BundleProductTableRow from "../../components/BundleProduct/bundleProductTableRow";
+import { getAllBundleProducts } from "../../queries/bundleProduct";
 import { withRouter } from "react-router-dom";
+import { isAuthenticated } from "../../authentication/authentication";
 
-class DisplayBundle extends Component {
+class DisplayBundleProduct extends Component {
   constructor(props) {
     super();
     this.goBackBowser = this.goBackBowser.bind(this);
   }
 
   goBackBowser() {
-    this.props.history.push("/bundle");
+    this.props.history.push("/bundleProduct");
   }
 
-  displayBundlesHandler() {
+  displayBundleProductsHandler() {
     var data = this.props.data;
 
     if (!data.loading) {
-      return data.getAllBundles.map((bundle, i) => {
-        return <BundleTableRow key={i} obj={bundle} />;
+      return data.getAllBundleProducts.map((item, i) => {
+        return <BundleProductTableRow key={i} obj={item} />;
       });
     }
   }
 
   render() {
-    return (
-      <div>
-        <Header />
+    const displayBundleProducts =
+      isAuthenticated() && isAuthenticated().user.role_id === 1 ? (
         <Container>
           <Row>
             <Col sm="12">
@@ -51,19 +51,19 @@ class DisplayBundle extends Component {
                     background: "#1ABC9C",
                   }}
                 >
-                  <h5>List of Bundles</h5>
+                  <h5>List of Bundle-Products</h5>
                 </CardHeader>
                 <CardBody>
                   <Table bordered style={{ textAlign: "center" }}>
                     <thead>
                       <tr>
                         <th>Id</th>
-                        <th>Name</th>
-                        <th>Description</th>
+                        <th>Bundle</th>
+                        <th>Product</th>
                         <th colSpan="3">Actions</th>
                       </tr>
                     </thead>
-                    <tbody>{this.displayBundlesHandler()}</tbody>
+                    <tbody>{this.displayBundleProductsHandler()}</tbody>
                   </Table>
                   <Button
                     onClick={this.goBackBowser}
@@ -80,9 +80,18 @@ class DisplayBundle extends Component {
             </Col>
           </Row>
         </Container>
+      ) : (
+        <h1 style={{ textAlign: "center", marginTop: "50px", color: "red" }}>
+          You are not Authenticated...!!
+        </h1>
+      );
+    return (
+      <div>
+        <Header />
+        {displayBundleProducts}
       </div>
     );
   }
 }
 
-export default withRouter(graphql(getAllBundles)(DisplayBundle));
+export default withRouter(graphql(getAllBundleProducts)(DisplayBundleProduct));

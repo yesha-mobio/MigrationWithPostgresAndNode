@@ -6,7 +6,7 @@ const Home = () => {
     <div>
       <Header />
       <div style={{ textAlign: "center", marginTop: "50px" }}>
-        <h1>You are in home page of Milkman project.</h1>
+        <h1>Welcome to Milkman project.</h1>
       </div>
     </div>
   );

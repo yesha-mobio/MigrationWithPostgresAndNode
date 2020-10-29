@@ -201,7 +201,7 @@ module.exports = {
           { user: _.pick(user, ["id", "email", "role_id"]) },
           SECRET,
           {
-            expiresIn: 60 * 60,
+            expiresIn: "1y",
           }
         );
 
@@ -415,6 +415,10 @@ module.exports = {
       });
       if (!user) {
         throw new Error("User does not exists..!!");
+      }
+
+      if (user && user.role_id !== 1) {
+        throw new Error("You are not an Admin...!!");
       }
 
       const valid = await bcrypt.compare(password, user.password);

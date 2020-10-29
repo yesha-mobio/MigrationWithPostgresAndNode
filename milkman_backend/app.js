@@ -12,18 +12,21 @@ const models = require("./models");
 const authMiddleware = require("./middleware/auth");
 
 var app = express();
+var corsOption = {
+  origin: process.env.CORS_ORIGIN,
+  credentials: true,
+};
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
+app.use(cors(corsOption));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-app.use(cors());
-// app.use(cors({ credentials: true, origin: process.env.FRONTEND_URL }));
 
 // Authentication Middleware
 app.use(authMiddleware);

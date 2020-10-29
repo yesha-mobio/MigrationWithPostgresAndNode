@@ -7,6 +7,7 @@ const getAllUsers = gql`
       name
       email
       address
+      role_id
       roles {
         name
       }
@@ -43,12 +44,14 @@ const createUser = gql`
       password: $password
       role_id: $role_id
     ) {
-      id
-      name
-      email
-      address
-      roles {
+      user {
+        id
         name
+        email
+        address
+        roles {
+          name
+        }
       }
     }
   }

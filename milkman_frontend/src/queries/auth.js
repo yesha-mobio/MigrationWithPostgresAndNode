@@ -8,6 +8,7 @@ const signin = gql`
         id
         name
         email
+        role_id
       }
     }
   }

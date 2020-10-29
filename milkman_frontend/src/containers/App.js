@@ -9,7 +9,7 @@ import Home from "../components/Core/home";
 import Bundles from "../components/Bundle/bundles";
 import SingleBundle from "../containers/Bundle/singleBundle.container";
 import AddBundle from "../containers/Bundle/addBundle.containers";
-import DisplayBundle from "../components/Bundle/displayBundle";
+import DisplayBundle from "../containers/Bundle/displayBundle.containers";
 import Roles from "../components/Role/roles";
 import AddRole from "../containers/Role/addRole.containers";
 import DisplayRole from "../containers/Role/displayRole.containers";
@@ -18,7 +18,10 @@ import AddProduct from "../containers/Product/addProduct.containers";
 import DisplayProduct from "../containers/Product/displayProduct.containers";
 import BundleProducts from "../components/BundleProduct/bundleProduct";
 import AddBundleProduct from "../containers/BundleProduct/addBundleProduct.container";
-import DisplayBundleProduct from "../components/BundleProduct/displayBundleProduct";
+import DisplayBundleProduct from "../containers/BundleProduct/displayBundleProduct.containers";
+import Users from "../components/User/users";
+import DisplayUser from "../containers/User/displayUser.containers";
+import AdminDashboard from "../components/User/Admin/adminDashboard";
 
 const Routes = () => {
   return (
@@ -45,6 +48,10 @@ const Routes = () => {
             path="/displayBundleProducts"
             component={DisplayBundleProduct}
           />
+          {/* User Routes */}
+          <Route path="/user" component={Users} />
+          <Route path="/displayUsers" component={DisplayUser} />
+          <Route path="/admin/dashboard" component={AdminDashboard} />
           {/* Auth Routes */}
           <Route path="/signin" component={Signin} />
           <Route path="/signup" component={Signup} />

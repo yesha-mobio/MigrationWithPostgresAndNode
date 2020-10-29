@@ -12,34 +12,33 @@ import {
 } from "reactstrap";
 
 import Header from "../../components/Core/header";
-import RoleTableRow from "../../components/Role/roleTableRow";
-import { getAllRoles } from "../../queries/role";
+import BundleTableRow from "../../components/Bundle/bundleTableRow";
+import { getAllBundles } from "../../queries/bundle";
 import { withRouter } from "react-router-dom";
 import { isAuthenticated } from "../../authentication/authentication";
 
-class DisplayRole extends Component {
+class DisplayBundle extends Component {
   constructor(props) {
     super();
     this.goBackBowser = this.goBackBowser.bind(this);
-    this.displayRolesHandler = this.displayRolesHandler.bind(this);
   }
 
   goBackBowser() {
-    this.props.history.push("/role");
+    this.props.history.push("/bundle");
   }
 
-  displayRolesHandler() {
+  displayBundlesHandler() {
     var data = this.props.data;
 
     if (!data.loading) {
-      return data.getAllRoles.map((role, i) => {
-        return <RoleTableRow key={i} obj={role} />;
+      return data.getAllBundles.map((bundle, i) => {
+        return <BundleTableRow key={i} obj={bundle} />;
       });
     }
   }
 
   render() {
-    const displayRoles =
+    const displayBundles =
       isAuthenticated() && isAuthenticated().user.role_id === 1 ? (
         <Container>
           <Row>
@@ -52,7 +51,7 @@ class DisplayRole extends Component {
                     background: "#1ABC9C",
                   }}
                 >
-                  <h5>List of Roles</h5>
+                  <h5>List of Bundles</h5>
                 </CardHeader>
                 <CardBody>
                   <Table bordered style={{ textAlign: "center" }}>
@@ -60,10 +59,11 @@ class DisplayRole extends Component {
                       <tr>
                         <th>Id</th>
                         <th>Name</th>
+                        <th>Description</th>
                         <th colSpan="3">Actions</th>
                       </tr>
                     </thead>
-                    <tbody>{this.displayRolesHandler()}</tbody>
+                    <tbody>{this.displayBundlesHandler()}</tbody>
                   </Table>
                   <Button
                     onClick={this.goBackBowser}
@@ -88,10 +88,10 @@ class DisplayRole extends Component {
     return (
       <div>
         <Header />
-        {displayRoles}
+        {displayBundles}
       </div>
     );
   }
 }
 
-export default withRouter(graphql(getAllRoles)(DisplayRole));
+export default withRouter(graphql(getAllBundles)(DisplayBundle));
