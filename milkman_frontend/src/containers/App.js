@@ -6,22 +6,22 @@ import Signup from "./Register/signup.containers";
 import User from "./User/users";
 import EditUser from "./User/editUser";
 import Home from "../components/Core/home";
-import Bundles from "../components/Bundle/bundles";
-import SingleBundle from "../containers/Bundle/singleBundle.container";
-import AddBundle from "../containers/Bundle/addBundle.containers";
-import DisplayBundle from "../containers/Bundle/displayBundle.containers";
-import Roles from "../components/Role/roles";
-import AddRole from "../containers/Role/addRole.containers";
-import DisplayRole from "../containers/Role/displayRole.containers";
-import Products from "../components/Product/products";
-import AddProduct from "../containers/Product/addProduct.containers";
-import DisplayProduct from "../containers/Product/displayProduct.containers";
-import BundleProducts from "../components/BundleProduct/bundleProduct";
-import AddBundleProduct from "../containers/BundleProduct/addBundleProduct.container";
-import DisplayBundleProduct from "../containers/BundleProduct/displayBundleProduct.containers";
-import Users from "../components/User/users";
-import DisplayUser from "../containers/User/displayUser.containers";
-import AdminDashboard from "../components/User/Admin/adminDashboard";
+import Bundles from "../components/Bundle/bundles.components";
+import SingleBundle from "./Bundle/singleBundle.container";
+import AddBundle from "./Bundle/addBundle.containers";
+import DisplayBundle from "../components/Bundle/displayBundle.components";
+import Roles from "../components/Role/roles.components";
+import AddRole from "./Role/addRole.containers";
+import DisplayRole from "../components/Role/displayRole.components";
+import Products from "../components/Product/products.components";
+import AddProduct from "./Product/addProduct.containers";
+import DisplayProduct from "../components/Product/displayProduct.components";
+import BundleProducts from "../components/BundleProduct/bundleProducts.components";
+import AddBundleProduct from "./BundleProduct/addBundleProduct.containers";
+import DisplayBundleProduct from "../components/BundleProduct/displayBundleProduct.components";
+import Users from "../components/User/users.components";
+import DisplayUser from "../components/User/displayUser.components";
+import AdminDashboard from "../components/User/Admin/adminDashboard.components";
 
 const Routes = () => {
   return (

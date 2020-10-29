@@ -11,35 +11,35 @@ import {
   Button,
 } from "reactstrap";
 
-import Header from "../../components/Core/header";
-import UserTableRow from "../../components/User/userTableRow";
-import { getAllUsers } from "../../queries/user";
+import Header from "../Core/header";
+import ProductTableRow from "./productTableRow.components";
+import { getAllProducts } from "../../queries/product";
 import { withRouter } from "react-router-dom";
 import { isAuthenticated } from "../../authentication/authentication";
 
-class DisplayUser extends Component {
+class DisplayProduct extends Component {
   constructor(props) {
     super();
     this.goBackBowser = this.goBackBowser.bind(this);
-    this.displayUsersHandler = this.displayUsersHandler.bind(this);
+    this.displayProductsHandler = this.displayProductsHandler.bind(this);
   }
 
   goBackBowser() {
-    this.props.history.push("/user");
+    this.props.history.push("/product");
   }
 
-  displayUsersHandler() {
+  displayProductsHandler() {
     var data = this.props.data;
 
     if (!data.loading) {
-      return data.getAllUsers.map((user, i) => {
-        return <UserTableRow key={i} obj={user} />;
+      return data.getAllProducts.map((product, i) => {
+        return <ProductTableRow key={i} obj={product} />;
       });
     }
   }
 
   render() {
-    const displayUsers =
+    const DisplayProducts =
       isAuthenticated() && isAuthenticated().user.role_id === 1 ? (
         <Container>
           <Row>
@@ -52,7 +52,7 @@ class DisplayUser extends Component {
                     background: "#1ABC9C",
                   }}
                 >
-                  <h5>List of Users</h5>
+                  <h5>List of Products</h5>
                 </CardHeader>
                 <CardBody>
                   <Table bordered style={{ textAlign: "center" }}>
@@ -60,14 +60,12 @@ class DisplayUser extends Component {
                       <tr>
                         <th>Id</th>
                         <th>Name</th>
-                        <th>Email</th>
-                        <th>Address</th>
-                        <th>Role_ID</th>
-                        <th>Role_Name</th>
+                        <th>Description</th>
+                        <th>Price</th>
                         <th colSpan="3">Actions</th>
                       </tr>
                     </thead>
-                    <tbody>{this.displayUsersHandler()}</tbody>
+                    <tbody>{this.displayProductsHandler()}</tbody>
                   </Table>
                   <Button
                     onClick={this.goBackBowser}
@@ -92,10 +90,10 @@ class DisplayUser extends Component {
     return (
       <div>
         <Header />
-        {displayUsers}
+        {DisplayProducts}
       </div>
     );
   }
 }
 
-export default withRouter(graphql(getAllUsers)(DisplayUser));
+export default withRouter(graphql(getAllProducts)(DisplayProduct));

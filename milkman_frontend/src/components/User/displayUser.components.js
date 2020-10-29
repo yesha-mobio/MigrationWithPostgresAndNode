@@ -11,34 +11,35 @@ import {
   Button,
 } from "reactstrap";
 
-import Header from "../../components/Core/header";
-import BundleTableRow from "../../components/Bundle/bundleTableRow";
-import { getAllBundles } from "../../queries/bundle";
+import Header from "../Core/header";
+import UserTableRow from "./userTableRow.components";
+import { getAllUsers } from "../../queries/user";
 import { withRouter } from "react-router-dom";
 import { isAuthenticated } from "../../authentication/authentication";
 
-class DisplayBundle extends Component {
+class DisplayUser extends Component {
   constructor(props) {
     super();
     this.goBackBowser = this.goBackBowser.bind(this);
+    this.displayUsersHandler = this.displayUsersHandler.bind(this);
   }
 
   goBackBowser() {
-    this.props.history.push("/bundle");
+    this.props.history.push("/user");
   }
 
-  displayBundlesHandler() {
+  displayUsersHandler() {
     var data = this.props.data;
 
     if (!data.loading) {
-      return data.getAllBundles.map((bundle, i) => {
-        return <BundleTableRow key={i} obj={bundle} />;
+      return data.getAllUsers.map((user, i) => {
+        return <UserTableRow key={i} obj={user} />;
       });
     }
   }
 
   render() {
-    const displayBundles =
+    const displayUsers =
       isAuthenticated() && isAuthenticated().user.role_id === 1 ? (
         <Container>
           <Row>
@@ -51,7 +52,7 @@ class DisplayBundle extends Component {
                     background: "#1ABC9C",
                   }}
                 >
-                  <h5>List of Bundles</h5>
+                  <h5>List of Users</h5>
                 </CardHeader>
                 <CardBody>
                   <Table bordered style={{ textAlign: "center" }}>
@@ -59,11 +60,14 @@ class DisplayBundle extends Component {
                       <tr>
                         <th>Id</th>
                         <th>Name</th>
-                        <th>Description</th>
+                        <th>Email</th>
+                        <th>Address</th>
+                        <th>Role_ID</th>
+                        <th>Role_Name</th>
                         <th colSpan="3">Actions</th>
                       </tr>
                     </thead>
-                    <tbody>{this.displayBundlesHandler()}</tbody>
+                    <tbody>{this.displayUsersHandler()}</tbody>
                   </Table>
                   <Button
                     onClick={this.goBackBowser}
@@ -88,10 +92,10 @@ class DisplayBundle extends Component {
     return (
       <div>
         <Header />
-        {displayBundles}
+        {displayUsers}
       </div>
     );
   }
 }
 
-export default withRouter(graphql(getAllBundles)(DisplayBundle));
+export default withRouter(graphql(getAllUsers)(DisplayUser));

@@ -11,8 +11,8 @@ import {
   Button,
 } from "reactstrap";
 
-import Header from "../../components/Core/header";
-import RoleTableRow from "../../components/Role/roleTableRow";
+import Header from "../Core/header";
+import RoleTableRow from "./roleTableRow.components";
 import { getAllRoles } from "../../queries/role";
 import { withRouter } from "react-router-dom";
 import { isAuthenticated } from "../../authentication/authentication";
