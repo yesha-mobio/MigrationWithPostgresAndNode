@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "reactstrap";
 import { Mutation } from "react-apollo";
+import confirm from "reactstrap-confirm";
 // import { flowRight as compose } from "lodash";
 import {
   deleteBundle,
@@ -36,11 +37,20 @@ const BundleTableRow = (props) => {
           {(mutation) => (
             <Button
               color="danger"
-              onClick={() => {
-                mutation({
-                  variables: { id: props.obj.id },
-                  refetchQueries: [{ query: getAllBundles }],
+              onClick={async () => {
+                const result = await confirm({
+                  message: "Are you sure you want to delete this Bundle?",
+                  title: "Delete Bundle...!!",
+                  confirmText: "Delete",
+                  cancelText: "Cancel",
+                  confirmColor: "danger",
                 });
+                if (result) {
+                  mutation({
+                    variables: { id: props.obj.id },
+                    refetchQueries: [{ query: getAllBundles }],
+                  });
+                }
               }}
             >
               Delete

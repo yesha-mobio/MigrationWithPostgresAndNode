@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "apollo-server-express": "^2.18.2",
+    "apollo-upload-server": "^7.1.0",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "cookie-parser": "~1.4.4",
@@ -16,7 +17,8 @@
     "ejs": "~2.6.1",
     "express": "^4.16.4",
     "express-graphql": "^0.11.0",
-    "graphql": "^15.3.0",
+    "graphql": "^15.4.0",
+    "graphql-upload": "^11.0.0",
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.20",

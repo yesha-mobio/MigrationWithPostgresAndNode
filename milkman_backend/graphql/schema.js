@@ -114,6 +114,7 @@ const typeDefs = gql`
 
     signin(email: String!, password: String!): LoginResponse!
     verifyToken(token: String!): LoginResponse!
+    uploadImage(image: String!): String!
   }
 `;
 

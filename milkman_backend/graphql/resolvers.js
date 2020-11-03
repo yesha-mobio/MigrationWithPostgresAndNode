@@ -1,6 +1,9 @@
 const bcrypt = require("bcrypt");
 const jsonwebtoken = require("jsonwebtoken");
 const _ = require("lodash");
+const { createWriteStreame } = require("fs");
+const { resolve } = require("path");
+const { reject } = require("lodash");
 require("dotenv").config();
 
 module.exports = {
@@ -306,14 +309,29 @@ module.exports = {
           throw new Error("Please enter Price");
         }
 
+        // if (image === "" || image === undefined) {
+        //   throw new Error("Plaese select an Image");
+        // }
+
+        // const { createReadStream, filename, mimetype, encoding } = image;
+        // console.log(filename);
+        // createReadStream()
+        //   .pipe(createWriteStreame(__dirname + `../public/uploads/${filename}`))
+        //   .on("finish", () => resolve(true))
+        //   .on("error", () => reject(false));
+
         const productExists = await models.tbl_product.findOne({
           where: { name },
         });
         if (productExists) {
           throw new Error("Product already Exists...!!");
         }
-
-        return await models.tbl_product.create({ name, description, price });
+        // console.log("FILE FILE FILE", image);
+        return await models.tbl_product.create({
+          name,
+          description,
+          price,
+        });
       } catch (err) {
         throw new Error(err);
       }

@@ -18,7 +18,7 @@ module.exports = {
         type: Sequelize.FLOAT,
       },
       // image: {
-      //   type: Sequelize.STRING
+      //   type: Sequelize.STRING,
       // },
       created_by: {
         type: Sequelize.INTEGER,

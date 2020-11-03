@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "reactstrap";
 import { Mutation } from "react-apollo";
+import confirm from "reactstrap-confirm";
 import { deleteProduct, getAllProducts } from "../../queries/product";
 import { withRouter } from "react-router-dom";
 
@@ -18,11 +19,20 @@ const ProductTableRow = (props) => {
           {(mutation) => (
             <Button
               color="danger"
-              onClick={() => {
-                mutation({
-                  variables: { id: props.obj.id },
-                  refetchQueries: [{ query: getAllProducts }],
+              onClick={async () => {
+                const result = await confirm({
+                  message: "Are you sure you want to delete this Product?",
+                  title: "Delete Product...!!",
+                  confirmText: "Delete",
+                  cancelText: "Cancel",
+                  confirmColor: "danger",
                 });
+                if (result) {
+                  mutation({
+                    variables: { id: props.obj.id },
+                    refetchQueries: [{ query: getAllProducts }],
+                  });
+                }
               }}
             >
               Delete

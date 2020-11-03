@@ -5,6 +5,8 @@ var cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const { ApolloServer } = require("apollo-server-express");
+// const { graphqlUploadExpress } = require("graphql-upload");
+// const { apoloUploadExpress } = require("apollo-upload-server");
 
 const typeDefs = require("./graphql/schema");
 const resolvers = require("./graphql/resolvers");
@@ -27,6 +29,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+
+// File-Upload Middleware
+// app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
 
 // Authentication Middleware
 app.use(authMiddleware);
