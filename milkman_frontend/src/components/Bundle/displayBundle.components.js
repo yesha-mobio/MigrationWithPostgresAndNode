@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { graphql } from "react-apollo";
 import {
   Table,
   Container,
@@ -10,12 +9,13 @@ import {
   CardBody,
   Button,
 } from "reactstrap";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 
 import Header from "../Core/header";
-import BundleTableRow from "./bundleTableRow.components";
-import { getAllBundles } from "../../queries/bundle";
-import { withRouter } from "react-router-dom";
 import { isAuthenticated } from "../../authentication/authentication";
+import { getBundles } from "../../redux/actions/Bundle-Action/bundleAction";
+import BundleTableRow from "./bundleTableRow.components";
 
 class DisplayBundle extends Component {
   constructor(props) {
@@ -27,17 +27,34 @@ class DisplayBundle extends Component {
     this.props.history.push("/bundle");
   }
 
-  displayBundlesHandler() {
-    var data = this.props.data;
-
-    if (!data.loading) {
-      return data.getAllBundles.map((bundle, i) => {
-        return <BundleTableRow key={i} obj={bundle} />;
-      });
-    }
+  componentDidMount() {
+    const { getBundles } = this.props;
+    getBundles();
   }
 
   render() {
+    const displayBundlesHandler = () => {
+      const { error, loading, bundleList } = this.props;
+      if (error) {
+        return (
+          <tr>
+            <td>{error}</td>
+          </tr>
+        );
+      }
+      if (loading) {
+        return (
+          <tr>
+            <td colSpan="4">Loading...!!</td>
+          </tr>
+        );
+      } else {
+        return bundleList.map((bundle, i) => {
+          return <BundleTableRow key={i} obj={bundle} />;
+        });
+      }
+    };
+
     const displayBundles =
       isAuthenticated() && isAuthenticated().user.role_id === 1 ? (
         <Container>
@@ -63,7 +80,7 @@ class DisplayBundle extends Component {
                         <th colSpan="3">Actions</th>
                       </tr>
                     </thead>
-                    <tbody>{this.displayBundlesHandler()}</tbody>
+                    <tbody>{displayBundlesHandler()}</tbody>
                   </Table>
                   <Button
                     onClick={this.goBackBowser}
@@ -94,4 +111,21 @@ class DisplayBundle extends Component {
   }
 }
 
-export default withRouter(graphql(getAllBundles)(DisplayBundle));
+const mapStateToProps = ({ bundle }) => {
+  return {
+    error: bundle.error,
+    loading: bundle.loading,
+    bundleList: bundle.bundleList,
+  };
+};
+
+function mapDispatchToProps(dispatch) {
+  return {
+    getBundles: () => dispatch(getBundles()),
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(DisplayBundle));
