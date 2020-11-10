@@ -1,72 +1,60 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Button } from "reactstrap";
-import { Mutation } from "react-apollo";
 import confirm from "reactstrap-confirm";
-// import { flowRight as compose } from "lodash";
-import {
-  deleteBundle,
-  getAllBundles,
-  //   getBundleById,
-} from "../../queries/bundle";
 import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+
+import { removeBundle } from "../../redux/actions/Bundle-Action/bundleAction";
 
 const BundleTableRow = (props) => {
-  //   const getBundleById = (id) => {
-  //     return (
-  //       <Query query={getBundleById}>
-  //         {(query) => {
-  //           query({
-  //             variables: { id: id },
-  //           });
-  //           //   props.history.push("/singleBundle");
-  //         }}
-  //       </Query>
-  //     );
-  //   };
+  const { removeBundle } = props;
   return (
-    <tr>
-      <td>{props.obj.id}</td>
-      <td>{props.obj.name}</td>
-      <td>{props.obj.description}</td>
-      <td>
-        <Button color="info" onClick={() => props.history.push("/")}>
-          Edit
-        </Button>
-        &nbsp;&nbsp;
-        <Mutation mutation={deleteBundle}>
-          {(mutation) => (
-            <Button
-              color="danger"
-              onClick={async () => {
-                const result = await confirm({
-                  message: "Are you sure you want to delete this Bundle?",
-                  title: "Delete Bundle...!!",
-                  confirmText: "Delete",
-                  cancelText: "Cancel",
-                  confirmColor: "danger",
-                });
-                if (result) {
-                  mutation({
-                    variables: { id: props.obj.id },
-                    refetchQueries: [{ query: getAllBundles }],
-                  });
-                }
-              }}
-            >
-              Delete
-            </Button>
-          )}
-        </Mutation>
-        &nbsp;&nbsp;
-        <Button
-          color="warning"
-          onClick={() => props.history.push("/singleBundle")}
-        >
-          View
-        </Button>
-      </td>
-    </tr>
+    <Fragment>
+      <tr>
+        <td>{props.obj.id}</td>
+        <td>{props.obj.name}</td>
+        <td>{props.obj.description}</td>
+        <td>
+          <Button color="info" onClick={() => props.history.push("/")}>
+            Edit
+          </Button>
+          &nbsp;&nbsp;
+          <Button
+            color="danger"
+            onClick={async () => {
+              const result = await confirm({
+                message: "Are you sure you want to delete this Bundle?",
+                title: "Delete Bundle...!!",
+                confirmText: "Delete",
+                cancelText: "Cancel",
+                confirmColor: "danger",
+              });
+              if (result) {
+                removeBundle(props.obj.id);
+              }
+            }}
+          >
+            Delete
+          </Button>
+          &nbsp;&nbsp;
+          <Button
+            color="warning"
+            onClick={() => {
+              props.history.push("/singleBundle/" + props.obj.id);
+            }}
+          >
+            View
+          </Button>
+        </td>
+      </tr>
+    </Fragment>
   );
 };
 
-export default withRouter(BundleTableRow);
+function mapDispatchToProps(dispatch) {
+  return {
+    removeBundle: (bundleId) => dispatch(removeBundle(bundleId)),
+  };
+}
+
+export default connect(null, mapDispatchToProps)(withRouter(BundleTableRow));

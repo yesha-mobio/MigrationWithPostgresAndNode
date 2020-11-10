@@ -32,7 +32,7 @@ const Routes = () => {
           <Route path="/bundle" component={Bundles} />
           <Route path="/addBundle" component={AddBundle} />
           <Route path="/displayBundles" component={DisplayBundle} />
-          <Route path="/singleBundle" component={SingleBundle} />
+          <Route path="/singleBundle/:bundle_id" component={SingleBundle} />
           {/* Role Routes */}
           <Route path="/role" component={Roles} />
           <Route path="/addRole" component={AddRole} />
