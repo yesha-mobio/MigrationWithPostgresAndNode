@@ -30,7 +30,9 @@ class DisplayBundle extends Component {
 
   componentDidMount() {
     const { getBundles } = this.props;
-    getBundles();
+    if (isAuthenticated() && isAuthenticated().user.role_id === 1) {
+      return getBundles();
+    }
   }
 
   render() {

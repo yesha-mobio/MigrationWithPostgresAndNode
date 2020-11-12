@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import App from "./containers/App";
+import App from "./components/App";
 import { ApolloProvider } from "react-apollo";
 import { Provider } from "react-redux";
 

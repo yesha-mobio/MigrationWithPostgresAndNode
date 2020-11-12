@@ -15,7 +15,10 @@ const BundleTableRow = (props) => {
         <td>{props.obj.name}</td>
         <td>{props.obj.description}</td>
         <td>
-          <Button color="info" onClick={() => props.history.push("/")}>
+          <Button
+            color="info"
+            onClick={() => props.history.push("/editBundle/" + props.obj.id)}
+          >
             Edit
           </Button>
           &nbsp;&nbsp;

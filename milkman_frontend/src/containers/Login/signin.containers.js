@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { graphql } from "react-apollo";
 import Header from "../../components/Core/header";
 import {
   Card,
@@ -14,12 +13,11 @@ import {
   Row,
   Col,
 } from "reactstrap";
-import { signin } from "../../queries/auth";
-import { Link, Redirect } from "react-router-dom";
-import {
-  authenticate,
-  isAuthenticated,
-} from "../../authentication/authentication";
+import { connect } from "react-redux";
+import { Link, Redirect, withRouter } from "react-router-dom";
+
+import { isAuthenticated } from "../../authentication/authentication";
+import { loginUser } from "../../redux/actions/Auth-Action/authAction";
 
 class Signin extends Component {
   constructor(props) {
@@ -42,31 +40,24 @@ class Signin extends Component {
     this.setState({ [name]: value });
   };
 
-  onSubmit = (event) => {
+  onSubmit = async (event) => {
     event.preventDefault();
-    this.props
-      .signin({
-        variables: {
-          email: this.state.email,
-          password: this.state.password,
-        },
-      })
-      .then((response) => {
-        authenticate(response, () => {
-          this.setState({
-            error: false,
-            success: true,
-            email: "",
-            password: "",
-            errorMessage: "",
-            didRedirect: true,
-          });
+    await this.props
+      .loginUser(this.state.email, this.state.password)
+      .then(() => {
+        this.setState({
+          error: false,
+          success: true,
+          email: "",
+          password: "",
+          errorMessage: "",
+          didRedirect: true,
         });
       })
       .catch((err) => {
         if (err) {
           this.setState({
-            error: true,
+            error: err,
             success: false,
             errorMessage: err.message.slice(15),
           });
@@ -83,9 +74,6 @@ class Signin extends Component {
         } else {
           return <Redirect to="/signin" />;
         }
-      }
-      if (isAuthenticated()) {
-        return <Redirect to="/" />;
       }
     };
 
@@ -172,11 +160,25 @@ class Signin extends Component {
     return (
       <div>
         <Header />
-        {signInForm()}
         {performRedirect()}
+        {signInForm()}
       </div>
     );
   }
 }
 
-export default graphql(signin, { name: "signin" })(Signin);
+const mapStateToProps = ({ auth }) => {
+  return {
+    error: auth.error,
+    loading: auth.loading,
+    userDetails: auth.userDetails,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    loginUser: (email, password) => dispatch(loginUser(email, password)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Signin));

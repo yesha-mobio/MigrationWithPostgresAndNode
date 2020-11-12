@@ -4,6 +4,7 @@ import {
   deleteBundle,
   getBundleById,
   updateBundle,
+  createBundle,
 } from "../../../queries/bundle";
 import {
   GET_BUNDLE_LIST_SUCCESS,
@@ -18,6 +19,8 @@ import {
   EDIT_BUNDLE_START,
   EDIT_BUNDLE_FAIL,
   EDIT_BUNDLE_SUCCESS,
+  ADD_BUNDLE_START,
+  ADD_BUNDLE_FAIL,
 } from "./actionType";
 
 const getBundleStart = {
@@ -60,7 +63,6 @@ const deleteBundleFail = {
 };
 
 const deleteBundleSuccess = (bundleId) => {
-  // window.location.reload(false);
   return { type: DELETE_BUNDLE_SUCCESS, bundleId };
 };
 
@@ -120,25 +122,69 @@ const editBundleFail = {
 };
 
 const editBundleSuccess = (updateBundle) => {
+  console.log("EDIT BUNDLE IN SUCCESS");
   return {
     type: EDIT_BUNDLE_SUCCESS,
     updateBundle,
   };
 };
 
-export const editBundle = (bundleId) => {
+export const editBundle = (bundleId, name, descriptiion) => {
   return async (dispatch) => {
+    console.log("EDIT BUNDLE START");
     dispatch(editBundleStart);
 
     const { data } = await client.mutate({
       mutation: updateBundle,
-      variables: { id: bundleId },
+      variables: {
+        id: bundleId,
+        name,
+        descriptiion,
+      },
     });
+    console.log("EDIT BUNDLE DATA", data);
 
     if (data.error) {
       dispatch(editBundleFail);
     } else {
+      console.log("EDIT BUNDLE START SUCCESS");
       dispatch(editBundleSuccess(data.updateBundle));
+    }
+  };
+};
+
+const addBundleStart = {
+  type: ADD_BUNDLE_START,
+};
+
+const addBundleFail = {
+  type: ADD_BUNDLE_FAIL,
+};
+
+const addBundleSuccess = (addBundle) => {
+  return {
+    type: EDIT_BUNDLE_SUCCESS,
+    addBundle,
+  };
+};
+
+export const addBundle = (name, description) => {
+  return async (dispatch) => {
+    dispatch(addBundleStart);
+
+    const { data } = await client.mutate({
+      mutation: createBundle,
+      variables: {
+        name,
+        description,
+      },
+      refetchQueries: [{ query: getAllBundles }],
+    });
+
+    if (data.error) {
+      dispatch(addBundleFail);
+    } else {
+      dispatch(addBundleSuccess(data.createBundle));
     }
   };
 };

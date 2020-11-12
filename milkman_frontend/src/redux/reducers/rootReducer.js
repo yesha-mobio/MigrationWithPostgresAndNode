@@ -1,9 +1,9 @@
 import { combineReducers } from "redux";
 
 import BundleReducer from "./bundleReducer";
-import UserReducer from "./userReducer";
+import AuthReducer from "./authReducer";
 
 export default combineReducers({
   bundle: BundleReducer,
-  user: UserReducer,
+  auth: AuthReducer,
 });
