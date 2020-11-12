@@ -16,6 +16,7 @@ import Header from "../Core/header";
 import { isAuthenticated } from "../../authentication/authentication";
 import { getBundles } from "../../redux/actions/Bundle-Action/bundleAction";
 import BundleTableRow from "./bundleTableRow.components";
+import Spinner from "../UI/Spinner/Spinner";
 
 class DisplayBundle extends Component {
   constructor(props) {
@@ -45,7 +46,9 @@ class DisplayBundle extends Component {
       if (loading) {
         return (
           <tr>
-            <td colSpan="4">Loading...!!</td>
+            <td colSpan="4">
+              <Spinner />
+            </td>
           </tr>
         );
       } else {
@@ -119,11 +122,11 @@ const mapStateToProps = ({ bundle }) => {
   };
 };
 
-function mapDispatchToProps(dispatch) {
+const mapDispatchToProps = (dispatch) => {
   return {
     getBundles: () => dispatch(getBundles()),
   };
-}
+};
 
 export default connect(
   mapStateToProps,

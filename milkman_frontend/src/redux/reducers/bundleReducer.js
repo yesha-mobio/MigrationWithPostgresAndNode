@@ -8,14 +8,17 @@ import {
   VIEW_BUNDLE_START,
   VIEW_BUNDLE_FAIL,
   VIEW_BUNDLE_SUCCESS,
+  EDIT_BUNDLE_START,
+  EDIT_BUNDLE_FAIL,
+  EDIT_BUNDLE_SUCCESS,
 } from "../actions/Bundle-Action/actionType";
 
 const initialState = {
   error: false,
-  processing: false,
   loading: false,
   bundleList: [],
-  bundle: null,
+  singleBundle: null,
+  updateBundle: null,
 };
 
 const BundleReducer = (state = initialState, action) => {
@@ -79,7 +82,26 @@ const BundleReducer = (state = initialState, action) => {
         ...state,
         error: false,
         loading: false,
-        bundle: action.bundle,
+        singleBundle: action.singleBundle,
+      };
+    case EDIT_BUNDLE_START:
+      return {
+        ...state,
+        error: false,
+        loading: true,
+      };
+    case EDIT_BUNDLE_FAIL:
+      return {
+        ...state,
+        error: true,
+        loading: false,
+      };
+    case EDIT_BUNDLE_SUCCESS:
+      return {
+        ...state,
+        error: false,
+        loading: false,
+        updateBundle: action.updateBundle,
       };
     default:
       return state;

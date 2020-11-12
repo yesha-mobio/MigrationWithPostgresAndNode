@@ -3,6 +3,7 @@ import {
   getAllBundles,
   deleteBundle,
   getBundleById,
+  updateBundle,
 } from "../../../queries/bundle";
 import {
   GET_BUNDLE_LIST_SUCCESS,
@@ -14,6 +15,9 @@ import {
   VIEW_BUNDLE_FAIL,
   VIEW_BUNDLE_SUCCESS,
   VIEW_BUNDLE_START,
+  EDIT_BUNDLE_START,
+  EDIT_BUNDLE_FAIL,
+  EDIT_BUNDLE_SUCCESS,
 } from "./actionType";
 
 const getBundleStart = {
@@ -86,8 +90,8 @@ const viewBundleFail = {
   type: VIEW_BUNDLE_FAIL,
 };
 
-const viewBundleSuccess = (bundle) => {
-  return { type: VIEW_BUNDLE_SUCCESS, bundle };
+const viewBundleSuccess = (singleBundle) => {
+  return { type: VIEW_BUNDLE_SUCCESS, singleBundle };
 };
 
 export const viewBundle = (bundleId) => {
@@ -103,6 +107,38 @@ export const viewBundle = (bundleId) => {
       dispatch(viewBundleFail);
     } else {
       dispatch(viewBundleSuccess(data.getBundleById));
+    }
+  };
+};
+
+const editBundleStart = {
+  type: EDIT_BUNDLE_START,
+};
+
+const editBundleFail = {
+  type: EDIT_BUNDLE_FAIL,
+};
+
+const editBundleSuccess = (updateBundle) => {
+  return {
+    type: EDIT_BUNDLE_SUCCESS,
+    updateBundle,
+  };
+};
+
+export const editBundle = (bundleId) => {
+  return async (dispatch) => {
+    dispatch(editBundleStart);
+
+    const { data } = await client.mutate({
+      mutation: updateBundle,
+      variables: { id: bundleId },
+    });
+
+    if (data.error) {
+      dispatch(editBundleFail);
+    } else {
+      dispatch(editBundleSuccess(data.updateBundle));
     }
   };
 };
