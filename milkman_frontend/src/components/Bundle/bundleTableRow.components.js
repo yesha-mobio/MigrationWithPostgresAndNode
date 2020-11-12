@@ -51,10 +51,10 @@ const BundleTableRow = (props) => {
   );
 };
 
-function mapDispatchToProps(dispatch) {
+const mapDispatchToProps = (dispatch) => {
   return {
     removeBundle: (bundleId) => dispatch(removeBundle(bundleId)),
   };
-}
+};
 
 export default connect(null, mapDispatchToProps)(withRouter(BundleTableRow));

@@ -16,12 +16,16 @@ import {
 import { connect } from "react-redux";
 
 import Header from "../../components/Core/header";
-import { viewBundle } from "../../redux/actions/Bundle-Action/bundleAction";
+import {
+  viewBundle,
+  editBundle,
+} from "../../redux/actions/Bundle-Action/bundleAction";
 import Spinner from "../../components/UI/Spinner/Spinner";
 
-class SingleBundle extends Component {
+class EditBundle extends Component {
   constructor(props) {
     super();
+    this.state = {};
   }
 
   componentDidMount() {

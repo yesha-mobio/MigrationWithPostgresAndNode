@@ -1,6 +1,7 @@
 export const authenticate = (data, next) => {
   if (typeof window !== undefined) {
-    const token = data.data.signin;
+    const token = data.signin;
+    // const token = data.data.signin;
     localStorage.setItem("TOKEN", JSON.stringify(token));
     next();
   }
