@@ -2,7 +2,7 @@ import {
   LOGIN_USER_START,
   LOGIN_USER_FAIL,
   LOGIN_USER_SUCCESS,
-} from "../actions/User-Action/actionType";
+} from "../actions/Auth-Action/actionType";
 
 const initialState = {
   error: false,
@@ -10,7 +10,7 @@ const initialState = {
   userDetails: null,
 };
 
-const UserReducer = (state = initialState, action) => {
+const AuthReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOGIN_USER_START:
       return {
@@ -36,4 +36,4 @@ const UserReducer = (state = initialState, action) => {
   }
 };
 
-export default UserReducer;
+export default AuthReducer;

@@ -11,6 +11,9 @@ import {
   EDIT_BUNDLE_START,
   EDIT_BUNDLE_FAIL,
   EDIT_BUNDLE_SUCCESS,
+  ADD_BUNDLE_START,
+  ADD_BUNDLE_FAIL,
+  ADD_BUNDLE_SUCCESS,
 } from "../actions/Bundle-Action/actionType";
 
 const initialState = {
@@ -19,6 +22,7 @@ const initialState = {
   bundleList: [],
   singleBundle: null,
   updateBundle: null,
+  addBundle: null,
 };
 
 const BundleReducer = (state = initialState, action) => {
@@ -102,6 +106,25 @@ const BundleReducer = (state = initialState, action) => {
         error: false,
         loading: false,
         updateBundle: action.updateBundle,
+      };
+    case ADD_BUNDLE_START:
+      return {
+        ...state,
+        error: false,
+        loading: true,
+      };
+    case ADD_BUNDLE_FAIL:
+      return {
+        ...state,
+        error: true,
+        loading: false,
+      };
+    case ADD_BUNDLE_SUCCESS:
+      return {
+        ...state,
+        error: false,
+        loading: false,
+        addBundle: action.addBundle,
       };
     default:
       return state;

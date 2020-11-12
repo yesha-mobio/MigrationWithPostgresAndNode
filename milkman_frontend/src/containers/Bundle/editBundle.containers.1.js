@@ -25,23 +25,51 @@ import Spinner from "../../components/UI/Spinner/Spinner";
 class EditBundle extends Component {
   constructor(props) {
     super();
-    this.state = {};
+    this.state = {
+      name: "",
+      description: "",
+      error: "",
+      success: false,
+      errorMessage: "",
+    };
+
+    this.onChange = this.onChange.bind(this);
+    // this.onSubmit = this.onSubmit.bind(this);
   }
 
+  onChange = (event) => {
+    const { name, value } = event.target;
+    this.setState({ [name]: value });
+  };
+
   componentDidMount() {
+    const { singleBundle } = this.props;
+    console.log("CONSTUCTOR IN EDIT BUNDLE", singleBundle);
     const {
       viewBundle,
+      editBundle,
       match: {
         params: { bundle_id },
       },
     } = this.props;
     viewBundle(bundle_id);
+    editBundle(bundle_id, this.state.name, this.state.description);
   }
+
+  // shouldComponentUpdate() {
+  //   const {
+  //     editBundle,
+  //     match: {
+  //       params: { bundle_id },
+  //     },
+  //   } = this.props;
+  //   editBundle(bundle_id);
+  // }
 
   render() {
     console.log(this.props);
-    const { singleBundle } = this.props;
-    const singleBundleForm = singleBundle ? (
+    const { updateBundle } = this.props;
+    const updateBundleForm = updateBundle ? (
       <Container>
         <Row>
           <Col sm="12">
@@ -53,7 +81,7 @@ class EditBundle extends Component {
                   background: "#1ABC9C",
                 }}
               >
-                <h5>Single Bundle</h5>
+                <h5>Edit Bundle</h5>
               </CardHeader>
               <CardBody>
                 {/* <Spinner /> */}
@@ -65,8 +93,8 @@ class EditBundle extends Component {
                       name="name"
                       id="bundleName"
                       placeholder="Enter the name of the Bundle"
-                      value={singleBundle.name}
-                      readOnly
+                      onChange={this.onChange}
+                      value={this.state.name}
                     />
                   </FormGroup>
                   <FormGroup>
@@ -76,8 +104,8 @@ class EditBundle extends Component {
                       name="description"
                       id="bundleDescription"
                       placeholder="Enter the Description"
-                      value={singleBundle.description}
-                      readOnly
+                      onChange={this.onChange}
+                      value={this.state.description}
                     />
                   </FormGroup>
                   <Button
@@ -108,7 +136,7 @@ class EditBundle extends Component {
                   background: "#1ABC9C",
                 }}
               >
-                <h5>Single Bundle</h5>
+                <h5>Edit Bundle</h5>
               </CardHeader>
               <CardBody>
                 <h3 style={{ color: "red", textAlign: "center" }}>
@@ -123,7 +151,7 @@ class EditBundle extends Component {
     return (
       <div>
         <Header />
-        {singleBundleForm}
+        {updateBundleForm}
       </div>
     );
   }
@@ -134,16 +162,19 @@ const mapStateToProps = ({ bundle }) => {
     error: bundle.error,
     loading: bundle.loading,
     singleBundle: bundle.singleBundle,
+    updateBundle: bundle.updateBundle,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     viewBundle: (bundleId) => dispatch(viewBundle(bundleId)),
+    editBundle: (bundleId, name, description) =>
+      dispatch(editBundle(bundleId, name, description)),
   };
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(SingleBundle));
+)(withRouter(EditBundle));

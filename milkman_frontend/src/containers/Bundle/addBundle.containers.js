@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import { graphql } from "react-apollo";
-import Header from "../../components/Core/header";
 import {
   Card,
   CardHeader,
@@ -13,10 +11,13 @@ import {
   Container,
   Row,
   Col,
-  // Alert,
 } from "reactstrap";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 
-import { createBundle, getAllBundles } from "../../queries/bundle";
+import Header from "../../components/Core/header";
+import { addBundle } from "../../redux/actions/Bundle-Action/bundleAction";
+import { isAuthenticated } from "../../authentication/authentication";
 
 class AddBundle extends Component {
   constructor(props) {
@@ -38,16 +39,10 @@ class AddBundle extends Component {
     this.setState({ [name]: value });
   };
 
-  onSubmit = (event) => {
+  onSubmit = async (event) => {
     event.preventDefault();
-    this.props
-      .createBundle({
-        variables: {
-          name: this.state.name,
-          description: this.state.description,
-        },
-        refetchQueries: [{ query: getAllBundles }],
-      })
+    await this.props
+      .addBundle(this.state.name, this.state.description)
       .then(() => {
         this.setState({
           error: false,
@@ -73,8 +68,46 @@ class AddBundle extends Component {
   }
 
   render() {
-    const addBundleForm = () => {
+    const successMessage = () => {
       return (
+        <div className="row">
+          <div className="col-md-6 offset-sm-3 text-left">
+            <div
+              className="alert alert-success"
+              style={{
+                display: this.state.success ? "" : "none",
+                marginTop: "10px",
+              }}
+            >
+              Bundle is added...!
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const errorMessage = () => {
+      return (
+        <div>
+          <div className="row">
+            <div className="col-md-6 offset-sm-3 text-left">
+              <div
+                className="alert alert-danger"
+                style={{
+                  display: this.state.error ? "" : "none",
+                  marginTop: "10px",
+                }}
+              >
+                {this.state.errorMessage}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const addBundleForm =
+      isAuthenticated() && isAuthenticated().user.role_id === 1 ? (
         <Container>
           <Row>
             <Col sm="12">
@@ -90,13 +123,6 @@ class AddBundle extends Component {
                 </CardHeader>
                 {successMessage()}
                 {errorMessage()}
-                {/* <Alert
-                  color="danger"
-                  className="col-md-6 offset-sm-3 text-left"
-                  style={{ marginTop: "30px" }}
-                >
-                  I am an alert and I can be dismissed!
-                </Alert> */}
                 <CardBody>
                   <Form onSubmit={this.onSubmit}>
                     <FormGroup>
@@ -147,54 +173,36 @@ class AddBundle extends Component {
             </Col>
           </Row>
         </Container>
+      ) : (
+        <h1 style={{ textAlign: "center", marginTop: "50px", color: "red" }}>
+          You are not Authenticated...!!
+        </h1>
       );
-    };
-
-    const successMessage = () => {
-      return (
-        <div className="row">
-          <div className="col-md-6 offset-sm-3 text-left">
-            <div
-              className="alert alert-success"
-              style={{
-                display: this.state.success ? "" : "none",
-                marginTop: "10px",
-              }}
-            >
-              Bundle is added...!
-            </div>
-          </div>
-        </div>
-      );
-    };
-
-    const errorMessage = () => {
-      return (
-        <div>
-          <div className="row">
-            <div className="col-md-6 offset-sm-3 text-left">
-              <div
-                className="alert alert-danger"
-                style={{
-                  display: this.state.error ? "" : "none",
-                  marginTop: "10px",
-                }}
-              >
-                {this.state.errorMessage}
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    };
 
     return (
       <div>
         <Header />
-        {addBundleForm()}
+        {addBundleForm}
       </div>
     );
   }
 }
 
-export default graphql(createBundle, { name: "createBundle" })(AddBundle);
+const mapStateToProps = ({ bundle }) => {
+  return {
+    error: bundle.error,
+    loading: bundle.loading,
+    addBundle: bundle.addBundle,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addBundle: (name, description) => dispatch(addBundle(name, description)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(AddBundle));
