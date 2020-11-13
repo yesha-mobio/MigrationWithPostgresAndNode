@@ -1,27 +1,64 @@
 import client from "../../../apollo-client/client";
 import {
-  getAllBundles,
-  deleteBundle,
-  getBundleById,
-  updateBundle,
   createBundle,
+  getAllBundles,
+  getBundleById,
+  deleteBundle,
+  updateBundle,
 } from "../../../queries/bundle";
 import {
+  ADD_BUNDLE_START,
+  ADD_BUNDLE_FAIL,
+  ADD_BUNDLE_SUCCESS,
   GET_BUNDLE_LIST_SUCCESS,
   GET_BUNDLE_LIST_FAIL,
   GET_BUNDLE_LIST_START,
-  DELETE_BUNDLE_START,
-  DELETE_BUNDLE_FAIL,
-  DELETE_BUNDLE_SUCCESS,
   VIEW_BUNDLE_FAIL,
   VIEW_BUNDLE_SUCCESS,
   VIEW_BUNDLE_START,
+  DELETE_BUNDLE_START,
+  DELETE_BUNDLE_FAIL,
+  DELETE_BUNDLE_SUCCESS,
   EDIT_BUNDLE_START,
   EDIT_BUNDLE_FAIL,
   EDIT_BUNDLE_SUCCESS,
-  ADD_BUNDLE_START,
-  ADD_BUNDLE_FAIL,
 } from "./actionType";
+
+const addBundleStart = {
+  type: ADD_BUNDLE_START,
+};
+
+const addBundleFail = {
+  type: ADD_BUNDLE_FAIL,
+};
+
+const addBundleSuccess = (addBundle) => {
+  return {
+    type: ADD_BUNDLE_SUCCESS,
+    addBundle,
+  };
+};
+
+export const addBundle = (name, description) => {
+  return async (dispatch) => {
+    dispatch(addBundleStart);
+
+    const { data } = await client.mutate({
+      mutation: createBundle,
+      variables: {
+        name,
+        description,
+      },
+      refetchQueries: [{ query: getAllBundles }],
+    });
+
+    if (data.error) {
+      dispatch(addBundleFail);
+    } else {
+      dispatch(addBundleSuccess(data.createBundle));
+    }
+  };
+};
 
 const getBundleStart = {
   type: GET_BUNDLE_LIST_START,
@@ -54,6 +91,35 @@ export const getBundles = () => {
   };
 };
 
+const viewBundleStart = {
+  type: VIEW_BUNDLE_START,
+};
+
+const viewBundleFail = {
+  type: VIEW_BUNDLE_FAIL,
+};
+
+const viewBundleSuccess = (singleBundle) => {
+  return { type: VIEW_BUNDLE_SUCCESS, singleBundle };
+};
+
+export const viewBundle = (bundleId) => {
+  return async (dispatch) => {
+    dispatch(viewBundleStart);
+
+    const { data } = await client.query({
+      query: getBundleById,
+      variables: { id: bundleId },
+    });
+
+    if (data.error) {
+      dispatch(viewBundleFail);
+    } else {
+      dispatch(viewBundleSuccess(data.getBundleById));
+    }
+  };
+};
+
 const deleteBundleStart = {
   type: DELETE_BUNDLE_START,
 };
@@ -80,35 +146,6 @@ export const removeBundle = (bundleId) => {
       dispatch(deleteBundleFail);
     } else {
       dispatch(deleteBundleSuccess(bundleId));
-    }
-  };
-};
-
-const viewBundleStart = {
-  type: VIEW_BUNDLE_START,
-};
-
-const viewBundleFail = {
-  type: VIEW_BUNDLE_FAIL,
-};
-
-const viewBundleSuccess = (singleBundle) => {
-  return { type: VIEW_BUNDLE_SUCCESS, singleBundle };
-};
-
-export const viewBundle = (bundleId) => {
-  return async (dispatch) => {
-    dispatch(viewBundleStart);
-
-    const { data } = await client.query({
-      query: getBundleById,
-      variables: { id: bundleId },
-    });
-
-    if (data.error) {
-      dispatch(viewBundleFail);
-    } else {
-      dispatch(viewBundleSuccess(data.getBundleById));
     }
   };
 };
@@ -149,42 +186,6 @@ export const editBundle = (bundleId, name, descriptiion) => {
     } else {
       console.log("EDIT BUNDLE START SUCCESS");
       dispatch(editBundleSuccess(data.updateBundle));
-    }
-  };
-};
-
-const addBundleStart = {
-  type: ADD_BUNDLE_START,
-};
-
-const addBundleFail = {
-  type: ADD_BUNDLE_FAIL,
-};
-
-const addBundleSuccess = (addBundle) => {
-  return {
-    type: EDIT_BUNDLE_SUCCESS,
-    addBundle,
-  };
-};
-
-export const addBundle = (name, description) => {
-  return async (dispatch) => {
-    dispatch(addBundleStart);
-
-    const { data } = await client.mutate({
-      mutation: createBundle,
-      variables: {
-        name,
-        description,
-      },
-      refetchQueries: [{ query: getAllBundles }],
-    });
-
-    if (data.error) {
-      dispatch(addBundleFail);
-    } else {
-      dispatch(addBundleSuccess(data.createBundle));
     }
   };
 };
