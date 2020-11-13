@@ -63,9 +63,9 @@ class AddBundle extends Component {
       });
   };
 
-  goBackBowser() {
+  goBackBowser = () => {
     this.props.history.push("/displayBundles");
-  }
+  };
 
   render() {
     const successMessage = () => {

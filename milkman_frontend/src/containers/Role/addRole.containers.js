@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import { graphql } from "react-apollo";
-import Header from "../../components/Core/header";
 import {
   Card,
   CardHeader,
@@ -14,8 +12,12 @@ import {
   Row,
   Col,
 } from "reactstrap";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 
-import { createRole, getAllRoles } from "../../queries/role";
+import Header from "../../components/Core/header";
+import { addRole } from "../../redux/actions/Role-Action/roleAction";
+import { isAuthenticated } from "../../authentication/authentication";
 
 class AddRole extends Component {
   constructor(props) {
@@ -24,36 +26,44 @@ class AddRole extends Component {
       name: "",
       error: "",
       success: false,
+      errorMessage: "",
     };
-    this.onChnageName = this.onChnageName.bind(this);
+    this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.goBackBowser = this.goBackBowser.bind(this);
   }
 
-  onChnageName(event) {
-    this.setState({
-      name: event.target.value,
-    });
-  }
+  onChange = (event) => {
+    const { name, value } = event.target;
+    this.setState({ [name]: value });
+  };
 
-  onSubmit(event) {
+  onSubmit = async (event) => {
     event.preventDefault();
-    this.setState({
-      error: false,
-      success: true,
-    });
-    this.props.createRole({
-      variables: {
-        name: this.state.name,
-      },
-      refetchQueries: [{ query: getAllRoles }],
-    });
-    // this.props.history.push("/displayRoles");
-  }
+    await this.props
+      .addRole(this.state.name)
+      .then(() => {
+        this.setState({
+          error: false,
+          success: true,
+          name: "",
+          errorMessage: "",
+        });
+      })
+      .catch((err) => {
+        if (err) {
+          this.setState({
+            error: true,
+            success: false,
+            errorMessage: err.message.slice(22),
+          });
+        }
+      });
+  };
 
-  goBackBowser() {
+  goBackBowser = () => {
     this.props.history.push("/displayRoles");
-  }
+  };
 
   render() {
     const successMessage = () => {
@@ -85,15 +95,15 @@ class AddRole extends Component {
                 marginTop: "10px",
               }}
             >
-              {this.state.error}
+              {this.state.errorMessage}
             </div>
           </div>
         </div>
       );
     };
 
-    const addRoleForm = () => {
-      return (
+    const addRoleForm =
+      isAuthenticated() && isAuthenticated().user.role_id === 1 ? (
         <Container>
           <Row>
             <Col sm="12">
@@ -118,7 +128,8 @@ class AddRole extends Component {
                         name="name"
                         id="roleName"
                         placeholder="Enter the name of the Role"
-                        onChange={this.onChnageName}
+                        onChange={this.onChange}
+                        value={this.state.name}
                       />
                     </FormGroup>
                     <Button
@@ -147,16 +158,36 @@ class AddRole extends Component {
             </Col>
           </Row>
         </Container>
+      ) : (
+        <h1 style={{ textAlign: "center", marginTop: "50px", color: "red" }}>
+          You are not Authenticated...!!
+        </h1>
       );
-    };
 
     return (
       <div>
         <Header />
-        {addRoleForm()}
+        {addRoleForm}
       </div>
     );
   }
 }
 
-export default graphql(createRole, { name: "createRole" })(AddRole);
+const mapStateToProps = ({ role }) => {
+  return {
+    error: role.error,
+    loading: role.loading,
+    addRole: role.addRole,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addRole: (name) => dispatch(addRole(name)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(AddRole));

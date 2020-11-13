@@ -2,7 +2,7 @@ import React from "react";
 import Header from "../Core/header";
 import BaseModal from "../UI/baseModal";
 
-const roles = (props) => {
+const Roles = (props) => {
   const addRole = () => {
     console.log(props);
     return props.history.push("/addRole");
@@ -27,4 +27,4 @@ const roles = (props) => {
   );
 };
 
-export default roles;
+export default Roles;
