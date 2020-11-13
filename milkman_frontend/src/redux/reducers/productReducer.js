@@ -1,105 +1,105 @@
 import {
-  ADD_ROLE_START,
-  ADD_ROLE_FAIL,
-  ADD_ROLE_SUCCESS,
-  GET_ROLE_LIST_START,
-  GET_ROLE_LIST_FAIL,
-  GET_ROLE_LIST_SUCCESS,
-  VIEW_ROLE_START,
-  VIEW_ROLE_FAIL,
-  VIEW_ROLE_SUCCESS,
-  DELETE_ROLE_START,
-  DELETE_ROLE_FAIL,
-  DELETE_ROLE_SUCCESS,
-} from "../actions/Role-Action/actionType";
+  ADD_PRODUCT_START,
+  ADD_PRODUCT_FAIL,
+  ADD_PRODUCT_SUCCESS,
+  GET_PRODUCT_LIST_START,
+  GET_PRODUCT_LIST_FAIL,
+  GET_PRODUCT_LIST_SUCCESS,
+  VIEW_PRODUCT_START,
+  VIEW_PRODUCT_FAIL,
+  VIEW_PRODUCT_SUCCESS,
+  DELETE_PRODUCT_START,
+  DELETE_PRODUCT_FAIL,
+  DELETE_PRODUCT_SUCCESS,
+} from "../actions/Product-Action/actionType";
 
 const initialState = {
   error: false,
   loading: false,
-  addRole: null,
-  roleList: [],
-  singleRole: null,
-  //   updateRole: null,
+  addProduct: null,
+  productList: [],
+  singleProduct: null,
+  //   updateProduct: null,
 };
 
-const RoleReducer = (state = initialState, action) => {
+const ProductReducer = (state = initialState, action) => {
   switch (action.type) {
-    case ADD_ROLE_START:
+    case ADD_PRODUCT_START:
       return {
         ...state,
         error: false,
         loading: true,
       };
-    case ADD_ROLE_FAIL:
+    case ADD_PRODUCT_FAIL:
       return {
         ...state,
         error: true,
         loading: false,
       };
-    case ADD_ROLE_SUCCESS:
+    case ADD_PRODUCT_SUCCESS:
       return {
         ...state,
         error: false,
         loading: false,
-        addRole: action.addRole,
+        addProduct: action.addProduct,
       };
-    case GET_ROLE_LIST_START:
+    case GET_PRODUCT_LIST_START:
       return {
         ...state,
         error: false,
         loading: true,
       };
-    case GET_ROLE_LIST_FAIL:
+    case GET_PRODUCT_LIST_FAIL:
       return {
         ...state,
         error: true,
         loading: false,
       };
-    case GET_ROLE_LIST_SUCCESS:
+    case GET_PRODUCT_LIST_SUCCESS:
       return {
         ...state,
         error: false,
         loading: false,
-        roleList: action.roleList,
+        productList: action.productList,
       };
-    case VIEW_ROLE_START:
+    case VIEW_PRODUCT_START:
       return {
         ...state,
         error: false,
         loading: true,
       };
-    case VIEW_ROLE_FAIL:
+    case VIEW_PRODUCT_FAIL:
       return {
         ...state,
         error: true,
         loading: false,
       };
-    case VIEW_ROLE_SUCCESS:
+    case VIEW_PRODUCT_SUCCESS:
       return {
         ...state,
         error: false,
         loading: false,
-        singleRole: action.singleRole,
+        singleProduct: action.singleProduct,
       };
-    case DELETE_ROLE_START:
+    case DELETE_PRODUCT_START:
       return {
         ...state,
         error: false,
         loading: true,
       };
-    case DELETE_ROLE_FAIL:
+    case DELETE_PRODUCT_FAIL:
       return {
         ...state,
         error: true,
         loading: false,
       };
-    case DELETE_ROLE_SUCCESS:
+    case DELETE_PRODUCT_SUCCESS:
       return {
         ...state,
         error: false,
         loading: false,
-        roleList: [
-          ...state.roleList.filter(({ id }) => {
+        productList: [
+          ...state.productList.filter(({ id }) => {
             return id !== action.id;
           }),
         ],
@@ -109,4 +109,4 @@ const RoleReducer = (state = initialState, action) => {
   }
 };
 
-export default RoleReducer;
+export default ProductReducer;

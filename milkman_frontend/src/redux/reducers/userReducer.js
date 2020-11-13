@@ -1,105 +1,105 @@
 import {
-  ADD_ROLE_START,
-  ADD_ROLE_FAIL,
-  ADD_ROLE_SUCCESS,
-  GET_ROLE_LIST_START,
-  GET_ROLE_LIST_FAIL,
-  GET_ROLE_LIST_SUCCESS,
-  VIEW_ROLE_START,
-  VIEW_ROLE_FAIL,
-  VIEW_ROLE_SUCCESS,
-  DELETE_ROLE_START,
-  DELETE_ROLE_FAIL,
-  DELETE_ROLE_SUCCESS,
-} from "../actions/Role-Action/actionType";
+  ADD_USER_START,
+  ADD_USER_FAIL,
+  ADD_USER_SUCCESS,
+  GET_USER_LIST_START,
+  GET_USER_LIST_FAIL,
+  GET_USER_LIST_SUCCESS,
+  VIEW_USER_START,
+  VIEW_USER_FAIL,
+  VIEW_USER_SUCCESS,
+  DELETE_USER_START,
+  DELETE_USER_FAIL,
+  DELETE_USER_SUCCESS,
+} from "../actions/User-Action/actionType";
 
 const initialState = {
   error: false,
   loading: false,
-  addRole: null,
-  roleList: [],
-  singleRole: null,
-  //   updateRole: null,
+  addUser: null,
+  userList: [],
+  singleUser: null,
+  //   updateUser: null,
 };
 
-const RoleReducer = (state = initialState, action) => {
+const UserReducer = (state = initialState, action) => {
   switch (action.type) {
-    case ADD_ROLE_START:
+    case ADD_USER_START:
       return {
         ...state,
         error: false,
         loading: true,
       };
-    case ADD_ROLE_FAIL:
+    case ADD_USER_FAIL:
       return {
         ...state,
         error: true,
         loading: false,
       };
-    case ADD_ROLE_SUCCESS:
+    case ADD_USER_SUCCESS:
       return {
         ...state,
         error: false,
         loading: false,
-        addRole: action.addRole,
+        addUser: action.addUser,
       };
-    case GET_ROLE_LIST_START:
+    case GET_USER_LIST_START:
       return {
         ...state,
         error: false,
         loading: true,
       };
-    case GET_ROLE_LIST_FAIL:
+    case GET_USER_LIST_FAIL:
       return {
         ...state,
         error: true,
         loading: false,
       };
-    case GET_ROLE_LIST_SUCCESS:
+    case GET_USER_LIST_SUCCESS:
       return {
         ...state,
         error: false,
         loading: false,
-        roleList: action.roleList,
+        userList: action.userList,
       };
-    case VIEW_ROLE_START:
+    case VIEW_USER_START:
       return {
         ...state,
         error: false,
         loading: true,
       };
-    case VIEW_ROLE_FAIL:
+    case VIEW_USER_FAIL:
       return {
         ...state,
         error: true,
         loading: false,
       };
-    case VIEW_ROLE_SUCCESS:
+    case VIEW_USER_SUCCESS:
       return {
         ...state,
         error: false,
         loading: false,
-        singleRole: action.singleRole,
+        singleUser: action.singleUser,
       };
-    case DELETE_ROLE_START:
+    case DELETE_USER_START:
       return {
         ...state,
         error: false,
         loading: true,
       };
-    case DELETE_ROLE_FAIL:
+    case DELETE_USER_FAIL:
       return {
         ...state,
         error: true,
         loading: false,
       };
-    case DELETE_ROLE_SUCCESS:
+    case DELETE_USER_SUCCESS:
       return {
         ...state,
         error: false,
         loading: false,
-        roleList: [
-          ...state.roleList.filter(({ id }) => {
+        userList: [
+          ...state.userList.filter(({ id }) => {
             return id !== action.id;
           }),
         ],
@@ -109,4 +109,4 @@ const RoleReducer = (state = initialState, action) => {
   }
 };
 
-export default RoleReducer;
+export default UserReducer;
