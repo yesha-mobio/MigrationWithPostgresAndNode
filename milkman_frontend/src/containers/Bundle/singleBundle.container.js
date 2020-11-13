@@ -18,6 +18,7 @@ import { connect } from "react-redux";
 import Header from "../../components/Core/header";
 import { viewBundle } from "../../redux/actions/Bundle-Action/bundleAction";
 import Spinner from "../../components/UI/Spinner/Spinner";
+import { isAuthenticated } from "../../authentication/authentication";
 
 class SingleBundle extends Component {
   constructor(props) {
@@ -25,17 +26,18 @@ class SingleBundle extends Component {
   }
 
   componentDidMount() {
-    const {
-      viewBundle,
-      match: {
-        params: { bundle_id },
-      },
-    } = this.props;
-    viewBundle(bundle_id);
+    if (isAuthenticated() && isAuthenticated().user.role_id === 1) {
+      const {
+        viewBundle,
+        match: {
+          params: { bundle_id },
+        },
+      } = this.props;
+      viewBundle(bundle_id);
+    }
   }
 
   render() {
-    console.log(this.props);
     const { singleBundle } = this.props;
     const singleBundleForm = singleBundle ? (
       <Container>
@@ -116,10 +118,17 @@ class SingleBundle extends Component {
         </Row>
       </Container>
     );
+
     return (
       <div>
         <Header />
-        {singleBundleForm}
+        {isAuthenticated() && isAuthenticated().user.role_id === 1 ? (
+          singleBundleForm
+        ) : (
+          <h1 style={{ textAlign: "center", marginTop: "50px", color: "red" }}>
+            You are not Authenticated...!!
+          </h1>
+        )}
       </div>
     );
   }
