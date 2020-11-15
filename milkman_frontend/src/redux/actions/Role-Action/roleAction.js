@@ -72,7 +72,7 @@ export const getRoles = () => {
   return async (dispatch) => {
     dispatch(getRoleListStart);
 
-    const { data } = client.query({
+    const { data } = await client.query({
       query: getAllRoles,
     });
 

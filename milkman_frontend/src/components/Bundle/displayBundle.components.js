@@ -24,9 +24,9 @@ class DisplayBundle extends Component {
     this.goBackBowser = this.goBackBowser.bind(this);
   }
 
-  goBackBowser() {
+  goBackBowser = () => {
     this.props.history.push("/bundle");
-  }
+  };
 
   componentDidMount() {
     const { getBundles } = this.props;

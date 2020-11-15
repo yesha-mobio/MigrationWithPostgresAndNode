@@ -1,9 +1,6 @@
 const bcrypt = require("bcrypt");
 const jsonwebtoken = require("jsonwebtoken");
 const _ = require("lodash");
-const { createWriteStreame } = require("fs");
-const { resolve } = require("path");
-const { reject } = require("lodash");
 require("dotenv").config();
 
 module.exports = {

@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import { graphql } from "react-apollo";
-import Header from "../../components/Core/header";
 import {
   Card,
   CardHeader,
@@ -14,8 +12,12 @@ import {
   Row,
   Col,
 } from "reactstrap";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
 
-import { createProduct, getAllProducts } from "../../queries/product";
+import Header from "../../components/Core/header";
+import { addProduct } from "../../redux/actions/Product-Action/productAction";
+import { isAuthenticated } from "../../authentication/authentication";
 
 class AddProduct extends Component {
   constructor(props) {
@@ -38,18 +40,11 @@ class AddProduct extends Component {
     this.setState({ [name]: value });
   };
 
-  onSubmit(event) {
+  onSubmit = async (event) => {
     event.preventDefault();
     const Price = parseFloat(this.state.price);
-    this.props
-      .createProduct({
-        variables: {
-          name: this.state.name,
-          description: this.state.description,
-          price: Price,
-        },
-        refetchQueries: [{ query: getAllProducts }],
-      })
+    await this.props
+      .addProduct(this.state.name, this.state.description, Price)
       .then(() => {
         this.setState({
           error: false,
@@ -69,15 +64,51 @@ class AddProduct extends Component {
           });
         }
       });
-  }
+  };
 
-  goBackBowser() {
+  goBackBowser = () => {
     this.props.history.push("/displayProducts");
-  }
+  };
 
   render() {
-    const addProductForm = () => {
+    const successMessage = () => {
       return (
+        <div className="row">
+          <div className="col-md-6 offset-sm-3 text-left">
+            <div
+              className="alert alert-success"
+              style={{
+                display: this.state.success ? "" : "none",
+                marginTop: "10px",
+              }}
+            >
+              Product is added...!
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const errorMessage = () => {
+      return (
+        <div className="row">
+          <div className="col-md-6 offset-sm-3 text-left">
+            <div
+              className="alert alert-danger"
+              style={{
+                display: this.state.error ? "" : "none",
+                marginTop: "10px",
+              }}
+            >
+              {this.state.errorMessage}
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const addProductForm =
+      isAuthenticated() && isAuthenticated().user.role_id === 1 ? (
         <Container>
           <Row>
             <Col sm="12">
@@ -154,52 +185,37 @@ class AddProduct extends Component {
             </Col>
           </Row>
         </Container>
+      ) : (
+        <h1 style={{ textAlign: "center", marginTop: "50px", color: "red" }}>
+          You are not Authenticated...!!
+        </h1>
       );
-    };
-
-    const successMessage = () => {
-      return (
-        <div className="row">
-          <div className="col-md-6 offset-sm-3 text-left">
-            <div
-              className="alert alert-success"
-              style={{
-                display: this.state.success ? "" : "none",
-                marginTop: "10px",
-              }}
-            >
-              Product is added...!
-            </div>
-          </div>
-        </div>
-      );
-    };
-
-    const errorMessage = () => {
-      return (
-        <div className="row">
-          <div className="col-md-6 offset-sm-3 text-left">
-            <div
-              className="alert alert-danger"
-              style={{
-                display: this.state.error ? "" : "none",
-                marginTop: "10px",
-              }}
-            >
-              {this.state.errorMessage}
-            </div>
-          </div>
-        </div>
-      );
-    };
 
     return (
       <div>
         <Header />
-        {addProductForm()}
+        {addProductForm}
       </div>
     );
   }
 }
 
-export default graphql(createProduct, { name: "createProduct" })(AddProduct);
+const mapStateToProps = ({ product }) => {
+  return {
+    error: product.error,
+    loading: product.loading,
+    addProduct: product.addProduct,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addProduct: (name, description, price) =>
+      dispatch(addProduct(name, description, price)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(AddProduct));

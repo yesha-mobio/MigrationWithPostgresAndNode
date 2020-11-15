@@ -5,7 +5,7 @@ import {
   signout,
 } from "../../../authentication/authentication";
 import { signin } from "../../../queries/auth";
-import { createUser, getAllUsers } from "../../../queries/user";
+import { createUser } from "../../../queries/user";
 import {
   LOGIN_USER_START,
   LOGIN_USER_FAIL,
@@ -73,7 +73,6 @@ export const registerUser = (name, email, address, password, role_id) => {
     const { data } = await client.mutate({
       mutation: createUser,
       variables: { name, email, address, password, role_id },
-      refetchQueries: [{ query: getAllUsers }],
     });
 
     if (data.error) {
