@@ -18,10 +18,10 @@ Authentication --> Done
 {Add Bundle, Display Bundle, View Role, Delete Role} --> Done
 5. Product
 Authentication --> Done
-{Add Product Done, Display Product Done, View Product Done, Delete Product} --> In-Progress
+{Add Product, Display Product, View Product, Delete Product} --> Done
 6. User
-Authentication --> In-Progress
-{Add User, Display User, View User, Delete User} --> In-Progress
+Authentication --> Done
+{Add User, Display User, View User, Delete User} --> Done
 7. BundleProduct
 Authentication --> In-Progress
 {Add BundleProduct, Display BundleProduct, View BundleProduct, Delete BundleProduct} --> In-Progress

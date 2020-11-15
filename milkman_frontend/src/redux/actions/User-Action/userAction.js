@@ -42,7 +42,7 @@ export const addUser = (name, email, address, password, role_id) => {
     const { data } = await client.mutate({
       mutation: createUser,
       variables: { name, email, address, password, role_id },
-      refetchQueries: [{ query: getAllUsers }],
+      // refetchQueries: [{ query: getAllUsers }],
     });
 
     if (data.error) {
@@ -72,7 +72,7 @@ export const getUsers = () => {
   return async (dispatch) => {
     dispatch(getUserListStart);
 
-    const { data } = client.query({
+    const { data } = await client.query({
       query: getAllUsers,
     });
 
@@ -122,6 +122,7 @@ const deleteUserFail = {
 };
 
 const deleteUserSuccess = (userId) => {
+  console.log("In DELETE USER SUCCESS", userId);
   return { type: DELETE_USER_SUCCESS, userId };
 };
 
@@ -134,6 +135,7 @@ export const removeUser = (userId) => {
       variables: { id: userId },
       refetchQueries: [{ query: getAllUsers }],
     });
+    console.log("IN REMOVE ACTION", data);
 
     if (data.error) {
       dispatch(deleteUserFail);

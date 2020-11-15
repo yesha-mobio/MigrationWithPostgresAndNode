@@ -3,8 +3,6 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 
 import Signin from "../containers/Login/signin.containers";
 import Signup from "../containers/Register/signup.containers";
-import User from "../containers/User/users";
-import EditUser from "../containers/User/editUser";
 import Home from "./Core/home";
 import Bundles from "./Bundle/bundles.components";
 import SingleBundle from "../containers/Bundle/singleBundle.containers";
@@ -25,6 +23,8 @@ import BundleProducts from "./BundleProduct/bundleProducts.components";
 import AddBundleProduct from "../containers/BundleProduct/addBundleProduct.containers.1";
 import DisplayBundleProduct from "./BundleProduct/displayBundleProduct.components";
 import Users from "./User/users.components";
+import SingleUser from "../containers/User/singleUser.containers";
+import AddUser from "../containers/User/addUser.containers";
 import DisplayUser from "./User/displayUser.components";
 import AdminDashboard from "./User/Admin/adminDashboard.components";
 
@@ -58,14 +58,14 @@ const Routes = () => {
           />
           {/* User Routes */}
           <Route path="/user" component={Users} />
+          <Route path="/addUser" component={AddUser} />
           <Route path="/displayUsers" component={DisplayUser} />
-          <Route path="/admin/dashboard" component={AdminDashboard} />
+          <Route path="/singleUser/:user_id" component={SingleUser} />
           {/* Auth Routes */}
           <Route path="/signin" component={Signin} />
           <Route path="/signup" component={Signup} />
           {/* Other Routes */}
-          <Route path="/allUsers" component={User} />
-          <Route path="/editUser/:id" exact component={EditUser} />
+          <Route path="/admin/dashboard" component={AdminDashboard} />
           {/* Home Route */}
           <Route path="/" exact component={Home} />
         </Switch>

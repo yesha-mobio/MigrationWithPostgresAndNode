@@ -22,6 +22,8 @@ const getUserById = gql`
       name
       email
       address
+      password
+      role_id
       roles {
         name
       }

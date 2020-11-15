@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { graphql } from "react-apollo";
 import {
   Table,
   Container,
@@ -10,35 +9,57 @@ import {
   CardBody,
   Button,
 } from "reactstrap";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
 
 import Header from "../Core/header";
 import UserTableRow from "./userTableRow.components";
-import { getAllUsers } from "../../queries/user";
-import { withRouter } from "react-router-dom";
+import { getUsers } from "../../redux/actions/User-Action/userAction";
 import { isAuthenticated } from "../../authentication/authentication";
+import Spinner from "../UI/Spinner/Spinner";
 
 class DisplayUser extends Component {
   constructor(props) {
     super();
     this.goBackBowser = this.goBackBowser.bind(this);
-    this.displayUsersHandler = this.displayUsersHandler.bind(this);
   }
 
-  goBackBowser() {
-    this.props.history.push("/user");
-  }
-
-  displayUsersHandler() {
-    var data = this.props.data;
-
-    if (!data.loading) {
-      return data.getAllUsers.map((user, i) => {
-        return <UserTableRow key={i} obj={user} />;
-      });
+  componentDidMount() {
+    const { getUsers } = this.props;
+    if (isAuthenticated() && isAuthenticated().user.role_id === 1) {
+      return getUsers();
     }
   }
 
+  goBackBowser = () => {
+    this.props.history.push("/user");
+  };
+
   render() {
+    const displayUsersHandler = () => {
+      const { error, loading, userList } = this.props;
+      if (error) {
+        return (
+          <tr>
+            <td>{error}</td>
+          </tr>
+        );
+      }
+      if (loading) {
+        return (
+          <tr>
+            <td colSpan="4">
+              <Spinner />
+            </td>
+          </tr>
+        );
+      } else {
+        return userList.map((user, i) => {
+          return <UserTableRow key={i} obj={user} />;
+        });
+      }
+    };
+
     const displayUsers =
       isAuthenticated() && isAuthenticated().user.role_id === 1 ? (
         <Container>
@@ -67,7 +88,7 @@ class DisplayUser extends Component {
                         <th colSpan="3">Actions</th>
                       </tr>
                     </thead>
-                    <tbody>{this.displayUsersHandler()}</tbody>
+                    <tbody>{displayUsersHandler()}</tbody>
                   </Table>
                   <Button
                     onClick={this.goBackBowser}
@@ -98,4 +119,21 @@ class DisplayUser extends Component {
   }
 }
 
-export default withRouter(graphql(getAllUsers)(DisplayUser));
+const mapStateToProps = ({ user }) => {
+  return {
+    error: user.error,
+    loading: user.loading,
+    userList: user.userList,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getUsers: () => dispatch(getUsers()),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(DisplayUser));
