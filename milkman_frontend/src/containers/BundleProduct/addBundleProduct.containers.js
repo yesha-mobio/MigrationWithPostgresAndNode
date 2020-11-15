@@ -47,7 +47,7 @@ class AddBundleProduct extends Component {
 
   displayBundles() {
     var data = this.props.getAllBundles;
-    // console.log(data);
+
     if (data.loading) {
       return "loading...!!";
     } else {
@@ -63,7 +63,7 @@ class AddBundleProduct extends Component {
 
   displayProducts() {
     var data = this.props.getAllProducts;
-    // console.log(this.props.data);
+
     if (data.loading) {
       return "loading...!!";
     } else {

@@ -4,12 +4,10 @@ import BaseModal from "../UI/baseModal";
 
 const Roles = (props) => {
   const addRole = () => {
-    console.log(props);
     return props.history.push("/addRole");
   };
 
   const displayRoles = () => {
-    console.log(props);
     return props.history.push("/displayRoles");
   };
 

@@ -4,12 +4,10 @@ import BaseModal from "../UI/baseModal";
 
 const Users = (props) => {
   const addUser = () => {
-    console.log(props);
     return props.history.push("/addUser");
   };
 
   const displayUsers = () => {
-    console.log(props);
     return props.history.push("/displayUsers");
   };
 

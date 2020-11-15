@@ -1,13 +1,14 @@
 1. Authentication --> Done
 2. Validation --> Done
 3. isAdmin middleware  --> Done
-4. View Data --> Done
+4. View Data --> In-Progress
 5. Update Data
 6. Image Uploading
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Work with Redux
+-----------------------
 1. Register --> Done
 2. Login --> Done
 3. Role
@@ -25,3 +26,30 @@ Authentication --> Done
 7. BundleProduct
 Authentication --> In-Progress
 {Add BundleProduct, Display BundleProduct, View BundleProduct, Delete BundleProduct} --> In-Progress
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Errors to Solve
+--------------------
+1. Refresh Data List after Delete
+2. After some users Grahql gives an error for creating new User (Try to solve with adding new resolver)
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Update data with Redux
+---------------------------------
+1. Role
+Authentication --> In-Progress
+{Update Role} --> In-Progress
+2. Bundle
+Authentication --> In-Progress
+{Update Bundle} --> In-Progress
+3. Product
+Authentication --> In-Progress
+{Update Product} --> In-Progress
+4. User
+Authentication --> In-Progress
+{Update User} --> In-Progress
+5. BundleProduct
+Authentication --> In-Progress
+{Update BundleProduct} --> In-Progress

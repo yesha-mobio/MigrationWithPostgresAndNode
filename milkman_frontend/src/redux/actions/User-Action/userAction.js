@@ -122,7 +122,6 @@ const deleteUserFail = {
 };
 
 const deleteUserSuccess = (userId) => {
-  console.log("In DELETE USER SUCCESS", userId);
   return { type: DELETE_USER_SUCCESS, userId };
 };
 
@@ -135,7 +134,6 @@ export const removeUser = (userId) => {
       variables: { id: userId },
       refetchQueries: [{ query: getAllUsers }],
     });
-    console.log("IN REMOVE ACTION", data);
 
     if (data.error) {
       dispatch(deleteUserFail);
