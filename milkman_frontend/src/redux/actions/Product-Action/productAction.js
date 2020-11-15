@@ -72,7 +72,7 @@ export const getProducts = () => {
   return async (dispatch) => {
     dispatch(getProductListStart);
 
-    const { data } = client.query({
+    const { data } = await client.query({
       query: getAllProducts,
     });
 
