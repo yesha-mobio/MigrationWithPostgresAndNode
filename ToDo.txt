@@ -4,3 +4,21 @@
 4. View Data --> Done
 5. Update Data
 6. Image Uploading
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Work with Redux
+1. Register --> Done
+2. Login --> Done
+3. Role
+Authentication --> Done
+{Add Role, Display Role, View Role, Delete Role} --> Done
+4. Bundle
+Authentication --> Done
+{Add Bundle, Display Bundle, View Role, Delete Role} --> Done
+5. Product --> In-Progress
+{Add Product, Display Product, View Product, Delete Product} --> In-Progress
+6. User
+{Add User, Display User, View User, Delete User}
+7. BundleProduct
+{Add BundleProduct, Display BundleProduct, View BundleProduct, Delete BundleProduct}
