@@ -2,7 +2,7 @@
 2. Validation --> Done
 3. isAdmin middleware  --> Done
 4. View Data --> In-Progress
-5. Update Data
+5. Update Data --> In-Progress
 6. Image Uploading
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -24,8 +24,8 @@ Authentication --> Done
 Authentication --> Done
 {Add User, Display User, View User, Delete User} --> Done
 7. BundleProduct
-Authentication --> In-Progress
-{Add BundleProduct, Display BundleProduct, View BundleProduct, Delete BundleProduct} --> In-Progress
+Authentication --> Done
+{Add BundleProduct Done, Display BundleProduct Done, View BundleProduct Done, Delete BundleProduct} --> In-Progress
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 

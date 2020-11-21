@@ -72,7 +72,7 @@ export const getBundleProducts = () => {
   return async (dispatch) => {
     dispatch(getBundleProductListStart);
 
-    const { data } = client.query({
+    const { data } = await client.query({
       query: getAllBundleProducts,
     });
 

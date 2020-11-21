@@ -1,7 +1,4 @@
 import React, { Component } from "react";
-import { graphql } from "react-apollo";
-import Header from "../../components/Core/header";
-import { flowRight as compose } from "lodash";
 import {
   Card,
   CardHeader,
@@ -15,13 +12,14 @@ import {
   Row,
   Col,
 } from "reactstrap";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 
-import {
-  createBundleProduct,
-  getAllBundleProducts,
-} from "../../queries/bundleProduct";
-import { getAllBundles } from "../../queries/bundle";
-import { getAllProducts } from "../../queries/product";
+import Header from "../../components/Core/header";
+import { addBundleProduct } from "../../redux/actions/BundleProduct-Action/bundleProductAction";
+import { getBundles } from "../../redux/actions/Bundle-Action/bundleAction";
+import { getProducts } from "../../redux/actions/Product-Action/productAction";
+import { isAuthenticated } from "../../authentication/authentication";
 
 class AddBundleProduct extends Component {
   constructor(props) {
@@ -40,53 +38,45 @@ class AddBundleProduct extends Component {
     this.displayProducts = this.displayProducts.bind(this);
   }
 
+  componentDidMount() {
+    const { getBundles, getProducts } = this.props;
+    if (isAuthenticated() && isAuthenticated().user.role_id === 1) {
+      getBundles();
+      getProducts();
+    }
+  }
+
   onChange = (event) => {
     const { name, value } = event.target;
     this.setState({ [name]: value });
   };
 
-  displayBundles() {
-    var data = this.props.getAllBundles;
+  displayBundles = () => {
+    var { bundleList } = this.props;
+    return bundleList.map((bundle) => {
+      return (
+        <option key={bundle.id} value={bundle.id}>
+          {bundle.name}
+        </option>
+      );
+    });
+  };
 
-    if (data.loading) {
-      return "loading...!!";
-    } else {
-      return data.getAllBundles.map((bundle) => {
-        return (
-          <option key={bundle.id} value={bundle.id}>
-            {bundle.name}
-          </option>
-        );
-      });
-    }
-  }
-
-  displayProducts() {
-    var data = this.props.getAllProducts;
-
-    if (data.loading) {
-      return "loading...!!";
-    } else {
-      return data.getAllProducts.map((product) => {
-        return (
-          <option key={product.id} value={product.id}>
-            {product.name}
-          </option>
-        );
-      });
-    }
-  }
+  displayProducts = () => {
+    var { productList } = this.props;
+    return productList.map((product) => {
+      return (
+        <option key={product.id} value={product.id}>
+          {product.name}
+        </option>
+      );
+    });
+  };
 
   onSubmit = (event) => {
     event.preventDefault();
     this.props
-      .createBundleProduct({
-        variables: {
-          bundle_id: this.state.bundle_id,
-          product_id: this.state.product_id,
-        },
-        refetchQueries: [{ query: getAllBundleProducts }],
-      })
+      .addBundleProduct(this.state.bundle_id, this.state.product_id)
       .then(() => {
         this.setState({
           error: false,
@@ -107,13 +97,51 @@ class AddBundleProduct extends Component {
       });
   };
 
-  goBackBowser() {
+  goBackBowser = () => {
     this.props.history.push("/displayBundleProducts");
-  }
+  };
 
   render() {
-    const addBundleProductForm = () => {
+    const successMessage = () => {
       return (
+        <div className="row">
+          <div className="col-md-6 offset-sm-3 text-left">
+            <div
+              className="alert alert-success"
+              style={{
+                display: this.state.success ? "" : "none",
+                marginTop: "10px",
+              }}
+            >
+              Bundle-Product is added...!
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const errorMessage = () => {
+      return (
+        <div>
+          <div className="row">
+            <div className="col-md-6 offset-sm-3 text-left">
+              <div
+                className="alert alert-danger"
+                style={{
+                  display: this.state.error ? "" : "none",
+                  marginTop: "10px",
+                }}
+              >
+                {this.state.errorMessage}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const addBundleProductForm =
+      isAuthenticated() && isAuthenticated().user.role_id === 1 ? (
         <Container>
           <Row>
             <Col sm="12">
@@ -185,58 +213,41 @@ class AddBundleProduct extends Component {
             </Col>
           </Row>
         </Container>
+      ) : (
+        <h1 style={{ textAlign: "center", marginTop: "50px", color: "red" }}>
+          You are not Authenticated...!!
+        </h1>
       );
-    };
-
-    const successMessage = () => {
-      return (
-        <div className="row">
-          <div className="col-md-6 offset-sm-3 text-left">
-            <div
-              className="alert alert-success"
-              style={{
-                display: this.state.success ? "" : "none",
-                marginTop: "10px",
-              }}
-            >
-              Bundle-Product is added...!
-            </div>
-          </div>
-        </div>
-      );
-    };
-
-    const errorMessage = () => {
-      return (
-        <div>
-          <div className="row">
-            <div className="col-md-6 offset-sm-3 text-left">
-              <div
-                className="alert alert-danger"
-                style={{
-                  display: this.state.error ? "" : "none",
-                  marginTop: "10px",
-                }}
-              >
-                {this.state.errorMessage}
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    };
 
     return (
       <div>
         <Header />
-        {addBundleProductForm()}
+        {addBundleProductForm}
       </div>
     );
   }
 }
 
-export default compose(
-  graphql(getAllBundles, { name: "getAllBundles" }),
-  graphql(getAllProducts, { name: "getAllProducts" }),
-  graphql(createBundleProduct, { name: "createBundleProduct" })
-)(AddBundleProduct);
+const mapStateToProps = ({ bundleProduct, bundle, product }) => {
+  return {
+    error: bundleProduct.error,
+    loading: bundleProduct.loading,
+    addBundleProduct: bundleProduct.addBundleProduct,
+    bundleList: bundle.bundleList,
+    productList: product.productList,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getBundles: () => dispatch(getBundles()),
+    getProducts: () => dispatch(getProducts()),
+    addBundleProduct: (bundle_id, product_id) =>
+      dispatch(addBundleProduct(bundle_id, product_id)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(AddBundleProduct));

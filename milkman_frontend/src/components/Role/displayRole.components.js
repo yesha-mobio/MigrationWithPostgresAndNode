@@ -48,7 +48,7 @@ class DisplayRole extends Component {
       if (loading) {
         return (
           <tr>
-            <td colSpan="4">
+            <td colSpan="3">
               <Spinner />
             </td>
           </tr>

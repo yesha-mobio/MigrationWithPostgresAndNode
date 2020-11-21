@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { graphql } from "react-apollo";
 import {
   Table,
   Container,
@@ -10,12 +9,14 @@ import {
   CardBody,
   Button,
 } from "reactstrap";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
 
 import Header from "../Core/header";
 import BundleProductTableRow from "./bundleProductTableRow.components";
-import { getAllBundleProducts } from "../../queries/bundleProduct";
-import { withRouter } from "react-router-dom";
+import { getBundleProducts } from "../../redux/actions/BundleProduct-Action/bundleProductAction";
 import { isAuthenticated } from "../../authentication/authentication";
+import Spinner from "../UI/Spinner/Spinner";
 
 class DisplayBundleProduct extends Component {
   constructor(props) {
@@ -23,21 +24,42 @@ class DisplayBundleProduct extends Component {
     this.goBackBowser = this.goBackBowser.bind(this);
   }
 
-  goBackBowser() {
-    this.props.history.push("/bundleProduct");
-  }
-
-  displayBundleProductsHandler() {
-    var data = this.props.data;
-
-    if (!data.loading) {
-      return data.getAllBundleProducts.map((item, i) => {
-        return <BundleProductTableRow key={i} obj={item} />;
-      });
+  componentDidMount() {
+    const { getBundleProducts } = this.props;
+    if (isAuthenticated() && isAuthenticated().user.role_id === 1) {
+      return getBundleProducts();
     }
   }
 
+  goBackBowser = () => {
+    this.props.history.push("/bundleProduct");
+  };
+
   render() {
+    const displayBundleProductsHandler = () => {
+      const { error, loading, bundleProductList } = this.props;
+      if (error) {
+        return (
+          <tr>
+            <td>{error}</td>
+          </tr>
+        );
+      }
+      if (loading) {
+        return (
+          <tr>
+            <td colSpan="4">
+              <Spinner />
+            </td>
+          </tr>
+        );
+      } else {
+        return bundleProductList.map((bundleProduct, i) => {
+          return <BundleProductTableRow key={i} obj={bundleProduct} />;
+        });
+      }
+    };
+
     const displayBundleProducts =
       isAuthenticated() && isAuthenticated().user.role_id === 1 ? (
         <Container>
@@ -63,7 +85,7 @@ class DisplayBundleProduct extends Component {
                         <th colSpan="3">Actions</th>
                       </tr>
                     </thead>
-                    <tbody>{this.displayBundleProductsHandler()}</tbody>
+                    <tbody>{displayBundleProductsHandler()}</tbody>
                   </Table>
                   <Button
                     onClick={this.goBackBowser}
@@ -94,4 +116,21 @@ class DisplayBundleProduct extends Component {
   }
 }
 
-export default withRouter(graphql(getAllBundleProducts)(DisplayBundleProduct));
+const mapStateToProps = ({ bundleProduct }) => {
+  return {
+    error: bundleProduct.error,
+    loading: bundleProduct.loading,
+    bundleProductList: bundleProduct.bundleProductList,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getBundleProducts: () => dispatch(getBundleProducts()),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(DisplayBundleProduct));

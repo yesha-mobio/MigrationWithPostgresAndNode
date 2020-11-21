@@ -48,7 +48,7 @@ class DisplayProduct extends Component {
       if (loading) {
         return (
           <tr>
-            <td colSpan="4">
+            <td colSpan="5">
               <Spinner />
             </td>
           </tr>
