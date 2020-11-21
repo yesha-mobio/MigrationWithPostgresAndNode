@@ -4,17 +4,28 @@ import confirm from "reactstrap-confirm";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { removeRole } from "../../redux/actions/Role-Action/roleAction";
+import {
+  removeRole,
+  setSelectedRole,
+} from "../../redux/actions/Role-Action/roleAction";
 
 const RoleTableRow = (props) => {
-  const { removeRole } = props;
+  const { removeRole, setSelectedRole } = props;
   return (
     <Fragment>
       <tr>
         <td>{props.obj.id}</td>
         <td>{props.obj.name}</td>
         <td>
-          <Button color="info">Edit</Button>
+          <Button
+            color="info"
+            onClick={() => {
+              setSelectedRole(props.obj);
+              props.history.push("/editRole/" + props.obj.id);
+            }}
+          >
+            Edit
+          </Button>
           &nbsp;&nbsp;
           <Button
             color="danger"
@@ -51,6 +62,7 @@ const RoleTableRow = (props) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     removeRole: (roleId) => dispatch(removeRole(roleId)),
+    setSelectedRole: (selectedRole) => dispatch(setSelectedRole(selectedRole)),
   };
 };
 

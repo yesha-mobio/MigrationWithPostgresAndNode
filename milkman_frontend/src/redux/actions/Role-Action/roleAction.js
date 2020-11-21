@@ -4,6 +4,7 @@ import {
   deleteRole,
   getAllRoles,
   getRoleById,
+  updateRole,
 } from "../../../queries/role";
 import {
   ADD_ROLE_START,
@@ -18,6 +19,10 @@ import {
   DELETE_ROLE_START,
   DELETE_ROLE_FAIL,
   DELETE_ROLE_SUCCESS,
+  EDIT_ROLE_START,
+  EDIT_ROLE_FAIL,
+  EDIT_ROLE_SUCCESS,
+  SELECTED_ROLE,
 } from "./actionType";
 
 const addRoleStart = {
@@ -140,5 +145,41 @@ export const removeRole = (roleId) => {
     } else {
       dispatch(deleteRoleSuccess(roleId));
     }
+  };
+};
+
+const editRoleStart = {
+  type: EDIT_ROLE_START,
+};
+
+const editRoleFail = {
+  type: EDIT_ROLE_FAIL,
+};
+
+const editRoleSuccess = (editRole) => {
+  return { type: EDIT_ROLE_SUCCESS, editRole };
+};
+
+export const updateSingleRole = ({ id, name }) => {
+  return async (dispatch) => {
+    dispatch(editRoleStart);
+
+    const { data } = await client.mutate({
+      mutation: updateRole,
+      variables: { id, name },
+      refetchQueries: [{ query: getAllRoles }],
+    });
+
+    if (data.error) {
+      dispatch(editRoleFail);
+    } else {
+      dispatch(editRoleSuccess(data.updateRole));
+    }
+  };
+};
+
+export const setSelectedRole = (selectedRole) => {
+  return async (dispatch) => {
+    dispatch({ type: SELECTED_ROLE, selectedRole });
   };
 };

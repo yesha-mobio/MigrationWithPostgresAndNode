@@ -12,6 +12,7 @@ import AddBundle from "../containers/Bundle/addBundle.containers";
 import DisplayBundle from "./Bundle/displayBundle.components";
 import Roles from "./Role/roles.components";
 import SingleRole from "../containers/Role/singleRole.containers";
+import EditRole from "../containers/Role/updateRole.containers";
 import AddRole from "../containers/Role/addRole.containers";
 import DisplayRole from "./Role/displayRole.components";
 import Products from "./Product/products.components";
@@ -44,6 +45,7 @@ const Routes = () => {
           <Route path="/addRole" component={AddRole} />
           <Route path="/displayRoles" component={DisplayRole} />
           <Route path="/singleRole/:role_id" component={SingleRole} />
+          <Route path="/editRole/:role_id" component={EditRole} />
           {/* Product Routes */}
           <Route path="/product" component={Products} />
           <Route path="/addProduct" component={AddProduct} />

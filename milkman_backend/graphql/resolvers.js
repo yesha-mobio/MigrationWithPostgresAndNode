@@ -143,8 +143,23 @@ module.exports = {
     },
     updateRole: async (root, { name, id }, { models }) => {
       try {
-        await models.tbl_role.update({ name }, { where: { id } });
-        const updatedRole = await models.tbl_role.findByPk(id);
+        if (id === "" || id === undefined) {
+          throw new Error("ID is Required...!!");
+        }
+
+        if (name === "" || name === undefined) {
+          throw new Error("Please Enter Name...!!");
+        }
+
+        let role = await models.tbl_role.findByPk(id);
+        if (!role) {
+          throw new Error("Role is not exist.");
+        }
+        await models.tbl_role.update(
+          { name: name || role.name },
+          { where: { id } }
+        );
+        const updatedRole = await models.tbl_role.findOne({ where: { id } });
         return updatedRole;
       } catch (err) {
         throw new Error(err);

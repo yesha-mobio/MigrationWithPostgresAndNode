@@ -11,6 +11,10 @@ import {
   DELETE_ROLE_START,
   DELETE_ROLE_FAIL,
   DELETE_ROLE_SUCCESS,
+  EDIT_ROLE_START,
+  EDIT_ROLE_FAIL,
+  EDIT_ROLE_SUCCESS,
+  SELECTED_ROLE,
 } from "../actions/Role-Action/actionType";
 
 const initialState = {
@@ -19,7 +23,7 @@ const initialState = {
   addRole: null,
   roleList: [],
   singleRole: null,
-  //   updateRole: null,
+  editRole: null,
 };
 
 const RoleReducer = (state = initialState, action) => {
@@ -100,9 +104,33 @@ const RoleReducer = (state = initialState, action) => {
         loading: false,
         roleList: [
           ...state.roleList.filter(({ id }) => {
-            return id !== action.id;
+            return id !== action.roleId;
           }),
         ],
+      };
+    case EDIT_ROLE_START:
+      return {
+        ...state,
+        error: false,
+        loading: true,
+      };
+    case EDIT_ROLE_FAIL:
+      return {
+        ...state,
+        error: true,
+        loading: false,
+      };
+    case EDIT_ROLE_SUCCESS:
+      return {
+        ...state,
+        error: false,
+        loading: false,
+        editRole: action.selectedRole,
+      };
+    case SELECTED_ROLE:
+      return {
+        ...state,
+        editRole: action.selectedRole,
       };
     default:
       return state;
