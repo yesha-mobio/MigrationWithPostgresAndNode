@@ -4,10 +4,13 @@ import confirm from "reactstrap-confirm";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { removeBundle } from "../../redux/actions/Bundle-Action/bundleAction";
+import {
+  removeBundle,
+  setSelectedBundle,
+} from "../../redux/actions/Bundle-Action/bundleAction";
 
 const BundleTableRow = (props) => {
-  const { removeBundle } = props;
+  const { removeBundle, setSelectedBundle } = props;
   return (
     <Fragment>
       <tr>
@@ -17,7 +20,10 @@ const BundleTableRow = (props) => {
         <td>
           <Button
             color="info"
-            onClick={() => props.history.push("/editBundle/" + props.obj.id)}
+            onClick={() => {
+              setSelectedBundle(props.obj);
+              props.history.push("/editBundle/" + props.obj.id);
+            }}
           >
             Edit
           </Button>
@@ -57,6 +63,8 @@ const BundleTableRow = (props) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     removeBundle: (bundleId) => dispatch(removeBundle(bundleId)),
+    setSelectedBundle: (selectedBundle) =>
+      dispatch(setSelectedBundle(selectedBundle)),
   };
 };
 

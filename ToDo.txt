@@ -42,8 +42,8 @@ Update data with Redux
 Authentication --> Done
 {Update Role} --> Done
 2. Bundle
-Authentication --> In-Progress
-{Update Bundle} --> In-Progress
+Authentication --> Done
+{Update Bundle} --> Done
 3. Product
 Authentication --> In-Progress
 {Update Product} --> In-Progress

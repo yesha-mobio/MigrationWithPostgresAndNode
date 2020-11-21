@@ -155,11 +155,14 @@ module.exports = {
         if (!role) {
           throw new Error("Role is not exist.");
         }
+
         await models.tbl_role.update(
           { name: name || role.name },
           { where: { id } }
         );
+
         const updatedRole = await models.tbl_role.findOne({ where: { id } });
+
         return updatedRole;
       } catch (err) {
         throw new Error(err);
@@ -297,11 +300,35 @@ module.exports = {
     },
     updateBundle: async (root, { name, description, id }, { models }) => {
       try {
+        if (id === "" || id === undefined) {
+          throw new Error("ID is Required...!!");
+        }
+
+        if (name === "" || name === undefined) {
+          throw new Error("Please Enter Name...!!");
+        }
+
+        if (description === "" || description === undefined) {
+          throw new Error("Please Enter description...!!");
+        }
+
+        let bundle = await models.tbl_bundle.findByPk(id);
+        if (!bundle) {
+          throw new Error("BUndle is not exist.");
+        }
+
         await models.tbl_bundle.update(
-          { name, description },
+          {
+            name: name || bundle.name,
+            description: description || bundle.description,
+          },
           { where: { id } }
         );
-        const updatedBundle = await models.tbl_bundle.findByPk(id);
+
+        const updatedBundle = await models.tbl_bundle.findOne({
+          where: { id },
+        });
+
         return updatedBundle;
       } catch (err) {
         throw new Error(err);
@@ -365,11 +392,40 @@ module.exports = {
       { models }
     ) => {
       try {
+        if (id === "" || id === undefined) {
+          throw new Error("ID is Required...!!");
+        }
+
+        if (name === "" || name === undefined) {
+          throw new Error("Please Enter Name...!!");
+        }
+
+        if (description === "" || description === undefined) {
+          throw new Error("Please Enter Description...!!");
+        }
+
+        if (price === "" || price === undefined) {
+          throw new Error("Please Enter Price...!!");
+        }
+
+        let product = await models.tbl_product.findByPk(id);
+        if (!product) {
+          throw new Error("Product is not exist.");
+        }
+
         await models.tbl_product.update(
-          { name, description, price },
+          {
+            name: name || product.name,
+            description: description || product.description,
+            price: price || product.price,
+          },
           { where: { id } }
         );
-        const updatedProduct = await models.tbl_product.findByPk(id);
+
+        const updatedProduct = await models.tbl_product.findOne({
+          where: { id },
+        });
+
         return updatedProduct;
       } catch (err) {
         throw new Error(err);

@@ -22,6 +22,7 @@ import {
   EDIT_BUNDLE_START,
   EDIT_BUNDLE_FAIL,
   EDIT_BUNDLE_SUCCESS,
+  SELECTED_BUNDLE,
 } from "./actionType";
 
 const addBundleStart = {
@@ -139,7 +140,7 @@ export const removeBundle = (bundleId) => {
     const { data } = await client.mutate({
       mutation: deleteBundle,
       variables: { id: bundleId },
-      // refetchQueries: [{ query: getAllBundles }],
+      refetchQueries: [{ query: getAllBundles }],
     });
 
     if (data.error) {
@@ -158,34 +159,37 @@ const editBundleFail = {
   type: EDIT_BUNDLE_FAIL,
 };
 
-const editBundleSuccess = (updateBundle) => {
-  console.log("EDIT BUNDLE IN SUCCESS");
+const editBundleSuccess = (editBundle) => {
   return {
     type: EDIT_BUNDLE_SUCCESS,
-    updateBundle,
+    editBundle,
   };
 };
 
-export const editBundle = (bundleId, name, descriptiion) => {
+export const updateSingleBundle = ({ id, name, description }) => {
   return async (dispatch) => {
-    console.log("EDIT BUNDLE START");
     dispatch(editBundleStart);
 
     const { data } = await client.mutate({
       mutation: updateBundle,
       variables: {
-        id: bundleId,
+        id,
         name,
-        descriptiion,
+        description,
       },
+      refetchQueries: [{ query: getAllBundles }],
     });
-    console.log("EDIT BUNDLE DATA", data);
 
     if (data.error) {
       dispatch(editBundleFail);
     } else {
-      console.log("EDIT BUNDLE START SUCCESS");
       dispatch(editBundleSuccess(data.updateBundle));
     }
+  };
+};
+
+export const setSelectedBundle = (selectedBundle) => {
+  return async (dispatch) => {
+    dispatch({ type: SELECTED_BUNDLE, selectedBundle });
   };
 };

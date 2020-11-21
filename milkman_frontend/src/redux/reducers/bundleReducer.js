@@ -14,6 +14,7 @@ import {
   EDIT_BUNDLE_START,
   EDIT_BUNDLE_FAIL,
   EDIT_BUNDLE_SUCCESS,
+  SELECTED_BUNDLE,
 } from "../actions/Bundle-Action/actionType";
 
 const initialState = {
@@ -22,7 +23,7 @@ const initialState = {
   addBundle: null,
   bundleList: [],
   singleBundle: null,
-  updateBundle: null,
+  editBundle: null,
 };
 
 const BundleReducer = (state = initialState, action) => {
@@ -103,7 +104,7 @@ const BundleReducer = (state = initialState, action) => {
         loading: false,
         bundleList: [
           ...state.bundleList.filter(({ id }) => {
-            return id !== action.id;
+            return id !== action.bundleId;
           }),
         ],
       };
@@ -124,9 +125,13 @@ const BundleReducer = (state = initialState, action) => {
         ...state,
         error: false,
         loading: false,
-        updateBundle: action.updateBundle,
+        editBundle: action.selectedBundle,
       };
-
+    case SELECTED_BUNDLE:
+      return {
+        ...state,
+        editBundle: action.selectedBundle,
+      };
     default:
       return state;
   }

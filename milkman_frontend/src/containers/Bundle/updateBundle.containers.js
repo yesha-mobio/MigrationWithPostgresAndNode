@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import {
   Card,
@@ -14,27 +13,29 @@ import {
   Row,
   Col,
 } from "reactstrap";
+import { connect } from "react-redux";
 
 import Header from "../../components/Core/header";
-import { updateSingleRole } from "../../redux/actions/Role-Action/roleAction";
+import { updateSingleBundle } from "../../redux/actions/Bundle-Action/bundleAction";
 import { isAuthenticated } from "../../authentication/authentication";
 
-class UpdateRole extends Component {
+class UpdateBundle extends Component {
   constructor(props) {
     super(props);
-    const { editRole, history } = props;
-    if (!editRole) {
-      history.push("/displayRoles");
+    const { editBundle, history } = props;
+    if (!editBundle) {
+      history.push("/displayBundles");
     }
     this.state = {
-      ...editRole,
+      ...editBundle,
       error: "",
       success: false,
       errorMessage: "",
     };
+
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-    this.displayRoleHandler = this.displayRoleHandler.bind(this);
+    this.displayBundleHandler = this.displayBundleHandler.bind(this);
   }
 
   onChange = (event) => {
@@ -45,14 +46,14 @@ class UpdateRole extends Component {
   onSubmit = async (event) => {
     event.preventDefault();
     await this.props
-      .updateSingleRole(this.state)
+      .updateSingleBundle(this.state)
       .then(() => {
         this.setState({
           error: false,
           success: true,
           errorMessage: "",
         });
-        this.props.history.push("/displayRoles");
+        this.props.history.push("/displayBundles");
       })
       .catch((err) => {
         if (err) {
@@ -65,8 +66,8 @@ class UpdateRole extends Component {
       });
   };
 
-  displayRoleHandler = () => {
-    this.props.history.push("/displayRoles");
+  displayBundleHandler = () => {
+    this.props.history.push("/displayBundles");
   };
 
   render() {
@@ -81,7 +82,7 @@ class UpdateRole extends Component {
                 marginTop: "10px",
               }}
             >
-              Role is updated...!
+              Bundle is updated...!
             </div>
           </div>
         </div>
@@ -106,7 +107,7 @@ class UpdateRole extends Component {
       );
     };
 
-    const updateRoleForm =
+    const updateBundleForm =
       isAuthenticated() && isAuthenticated().user.role_id === 1 ? (
         <Container>
           <Row>
@@ -119,31 +120,42 @@ class UpdateRole extends Component {
                     background: "#1ABC9C",
                   }}
                 >
-                  <h5>Update Role</h5>
+                  <h5>Update Bundle</h5>
                 </CardHeader>
                 {successMessage()}
                 {errorMessage()}
                 <CardBody>
                   <Form onSubmit={this.onSubmit}>
                     <FormGroup>
-                      <Label for="roleId">Role-ID</Label>
+                      <Label for="bundleId">Bundle-ID</Label>
                       <Input
                         type="text"
                         name="id"
-                        id="roleId"
+                        id="bundleId"
                         value={this.state.id}
                         readOnly
                       />
                     </FormGroup>
                     <FormGroup>
-                      <Label for="roleName">Name</Label>
+                      <Label for="bundleName">Name</Label>
                       <Input
                         type="text"
                         name="name"
-                        id="roleName"
-                        placeholder="Enter the name of the Role"
+                        id="bundleName"
+                        placeholder="Enter the name of the Bundle"
                         onChange={this.onChange}
                         value={this.state.name}
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <Label for="bundleDescription">Description</Label>
+                      <Input
+                        type="text"
+                        name="description"
+                        id="bundleDescription"
+                        placeholder="Enter the Description"
+                        onChange={this.onChange}
+                        value={this.state.description}
                       />
                     </FormGroup>
                     <Button
@@ -153,11 +165,11 @@ class UpdateRole extends Component {
                         borderColor: "#1ABC9C",
                       }}
                     >
-                      <b>Update Role</b>
+                      <b>Update Bundle</b>
                     </Button>
                     &nbsp; &nbsp;
                     <Button
-                      onClick={this.displayRoleHandler}
+                      onClick={this.displayBundleHandler}
                       style={{
                         background: "#BC1A4B",
                         color: "#1ABC9C",
@@ -181,27 +193,28 @@ class UpdateRole extends Component {
     return (
       <div>
         <Header />
-        {updateRoleForm}
+        {updateBundleForm}
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ role }) => {
+const mapStateToProps = ({ bundle }) => {
   return {
-    error: role.error,
-    loading: role.loading,
-    editRole: role.editRole,
+    error: bundle.error,
+    loading: bundle.loading,
+    editBundle: bundle.editBundle,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    updateSingleRole: (roleData) => dispatch(updateSingleRole(roleData)),
+    updateSingleBundle: (bundleData) =>
+      dispatch(updateSingleBundle(bundleData)),
   };
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(UpdateRole));
+)(withRouter(UpdateBundle));
