@@ -4,10 +4,13 @@ import confirm from "reactstrap-confirm";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
-import { removeProduct } from "../../redux/actions/Product-Action/productAction";
+import {
+  removeProduct,
+  setSelectedProduct,
+} from "../../redux/actions/Product-Action/productAction";
 
 const ProductTableRow = (props) => {
-  const { removeProduct } = props;
+  const { removeProduct, setSelectedProduct } = props;
   return (
     <Fragment>
       <tr>
@@ -16,7 +19,15 @@ const ProductTableRow = (props) => {
         <td>{props.obj.description}</td>
         <td>{props.obj.price}</td>
         <td>
-          <Button color="info">Edit</Button>
+          <Button
+            color="info"
+            onClick={() => {
+              setSelectedProduct(props.obj);
+              props.history.push("/editProduct/" + props.obj.id);
+            }}
+          >
+            Edit
+          </Button>
           &nbsp;&nbsp;
           <Button
             color="danger"
@@ -53,6 +64,8 @@ const ProductTableRow = (props) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     removeProduct: (productId) => dispatch(removeProduct(productId)),
+    setSelectedProduct: (selectedProduct) =>
+      dispatch(setSelectedProduct(selectedProduct)),
   };
 };
 

@@ -33,6 +33,7 @@ Errors to Solve
 --------------------
 1. Refresh Data List after Delete -->Done
 2. After some users Grahql gives an error for creating new User (Try to solve with adding new resolver)
+3. Price is not update in product due to some error
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -45,8 +46,8 @@ Authentication --> Done
 Authentication --> Done
 {Update Bundle} --> Done
 3. Product
-Authentication --> In-Progress
-{Update Product} --> In-Progress
+Authentication --> Done
+{Update Product} --> Done
 4. User
 Authentication --> In-Progress
 {Update User} --> In-Progress

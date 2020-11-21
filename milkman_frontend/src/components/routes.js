@@ -16,6 +16,7 @@ import AddRole from "../containers/Role/addRole.containers";
 import DisplayRole from "./Role/displayRole.components";
 import Products from "./Product/products.components";
 import SingleProduct from "../containers/Product/singleProduct.containers";
+import EditProduct from "../containers/Product/updateProduct.containers";
 import AddProduct from "../containers/Product/addProduct.containers";
 import DisplayProduct from "./Product/displayProduct.components";
 import BundleProducts from "./BundleProduct/bundleProducts.components";
@@ -50,6 +51,7 @@ const Routes = () => {
           <Route path="/addProduct" component={AddProduct} />
           <Route path="/displayProducts" component={DisplayProduct} />
           <Route path="/singleProduct/:product_id" component={SingleProduct} />
+          <Route path="/editProduct/:product_id" component={EditProduct} />
           {/* BundleProduct Routes */}
           <Route path="/bundleProduct" component={BundleProducts} />
           <Route path="/addBundleProduct" component={AddBundleProduct} />

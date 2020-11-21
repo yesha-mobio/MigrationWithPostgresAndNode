@@ -11,6 +11,10 @@ import {
   DELETE_PRODUCT_START,
   DELETE_PRODUCT_FAIL,
   DELETE_PRODUCT_SUCCESS,
+  EDIT_PRODUCT_START,
+  EDIT_PRODUCT_FAIL,
+  EDIT_PRODUCT_SUCCESS,
+  SELECTED_PRODUCT,
 } from "../actions/Product-Action/actionType";
 
 const initialState = {
@@ -19,7 +23,7 @@ const initialState = {
   addProduct: null,
   productList: [],
   singleProduct: null,
-  //   updateProduct: null,
+  editProduct: null,
 };
 
 const ProductReducer = (state = initialState, action) => {
@@ -100,9 +104,33 @@ const ProductReducer = (state = initialState, action) => {
         loading: false,
         productList: [
           ...state.productList.filter(({ id }) => {
-            return id !== action.id;
+            return id !== action.productId;
           }),
         ],
+      };
+    case EDIT_PRODUCT_START:
+      return {
+        ...state,
+        error: false,
+        loading: true,
+      };
+    case EDIT_PRODUCT_FAIL:
+      return {
+        ...state,
+        error: true,
+        loading: false,
+      };
+    case EDIT_PRODUCT_SUCCESS:
+      return {
+        ...state,
+        error: false,
+        loading: false,
+        editProduct: action.selectedProduct,
+      };
+    case SELECTED_PRODUCT:
+      return {
+        ...state,
+        editProduct: action.selectedProduct,
       };
     default:
       return state;

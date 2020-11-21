@@ -4,6 +4,7 @@ import {
   deleteProduct,
   getAllProducts,
   getProductById,
+  updateProduct,
 } from "../../../queries/product";
 import {
   ADD_PRODUCT_START,
@@ -18,6 +19,10 @@ import {
   DELETE_PRODUCT_START,
   DELETE_PRODUCT_FAIL,
   DELETE_PRODUCT_SUCCESS,
+  EDIT_PRODUCT_START,
+  EDIT_PRODUCT_FAIL,
+  EDIT_PRODUCT_SUCCESS,
+  SELECTED_PRODUCT,
 } from "./actionType";
 
 const addProductStart = {
@@ -140,5 +145,49 @@ export const removeProduct = (productId) => {
     } else {
       dispatch(deleteProductSuccess(productId));
     }
+  };
+};
+
+const editProductStart = {
+  type: EDIT_PRODUCT_START,
+};
+
+const editProductFail = {
+  type: EDIT_PRODUCT_FAIL,
+};
+
+const editProductSuccess = (editProduct) => {
+  return {
+    type: EDIT_PRODUCT_SUCCESS,
+    editProduct,
+  };
+};
+
+export const updateSingleProduct = ({ id, name, description, price }) => {
+  return async (dispatch) => {
+    dispatch(editProductStart);
+
+    const { data } = await client.mutate({
+      mutation: updateProduct,
+      variables: {
+        id,
+        name,
+        description,
+        price,
+      },
+      refetchQueries: [{ query: getAllProducts }],
+    });
+
+    if (data.error) {
+      dispatch(editProductFail);
+    } else {
+      dispatch(editProductSuccess(data.updateProduct));
+    }
+  };
+};
+
+export const setSelectedProduct = (selectedProduct) => {
+  return async (dispatch) => {
+    dispatch({ type: SELECTED_PRODUCT, selectedProduct });
   };
 };
