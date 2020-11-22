@@ -1,5 +1,4 @@
 import React, { Fragment, useState } from "react";
-// import { graphql } from "react-apollo";
 import {
   Collapse,
   Navbar,
@@ -9,13 +8,18 @@ import {
   NavItem,
   NavLink,
 } from "reactstrap";
-import { isAuthenticated, signout } from "../../authentication/authentication";
 import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+
+import { isAuthenticated } from "../../authentication/authentication";
+import { logoutUser } from "../../redux/actions/Auth-Action/authAction";
 
 const Header = (props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggle = () => setIsOpen(!isOpen);
+
+  const { logoutUser } = props;
 
   return (
     <div>
@@ -54,9 +58,8 @@ const Header = (props) => {
                 <NavItem>
                   <NavLink
                     onClick={() => {
-                      signout(() => {
-                        props.history.push("/signin");
-                      });
+                      logoutUser();
+                      props.history.push("/signin");
                     }}
                   >
                     <b>Signout</b>
@@ -71,4 +74,10 @@ const Header = (props) => {
   );
 };
 
-export default withRouter(Header);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    logoutUser: () => dispatch(logoutUser()),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(withRouter(Header));

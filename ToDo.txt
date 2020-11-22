@@ -11,19 +11,20 @@ Work with Redux
 -----------------------
 1. Register --> Done
 2. Login --> Done
-3. Role
+3. Logout --> Done
+4. Role
 Authentication --> Done
 {Add Role, Display Role, View Role, Delete Role} --> Done
-4. Bundle
+5. Bundle
 Authentication --> Done
 {Add Bundle, Display Bundle, View Role, Delete Role} --> Done
-5. Product
+6. Product
 Authentication --> Done
 {Add Product, Display Product, View Product, Delete Product} --> Done
-6. User
+7. User
 Authentication --> Done
 {Add User, Display User, View User, Delete User} --> Done
-7. BundleProduct
+8. BundleProduct
 Authentication --> Done
 {Add BundleProduct, Display BundleProduct, View BundleProduct, Delete BundleProduct} --> Done
 

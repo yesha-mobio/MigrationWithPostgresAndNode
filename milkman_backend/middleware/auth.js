@@ -5,7 +5,7 @@ module.exports = (req, res, next) => {
   try {
     const requestQuery = req.body.query;
     if (requestQuery !== undefined) {
-      const excludeAPI = ["signin", "createUser", "getAllRoles"];
+      const excludeAPI = ["signin", "register", "getAllRoles"];
 
       if (
         !excludeAPI.some(function (v) {

@@ -574,5 +574,77 @@ module.exports = {
 
       return { token: userToken.token, user };
     },
+    register: async (
+      root,
+      { name, email, password, address, role_id },
+      { models, SECRET }
+    ) => {
+      try {
+        if (name === "" || name === undefined) {
+          throw new Error("Please enter your Name");
+        }
+
+        if (email === "" || email === undefined) {
+          throw new Error("Please enter your Email");
+        }
+
+        if (password === "" || password === undefined) {
+          throw new Error("Please enter Password");
+        }
+
+        if (password.length < 6) {
+          throw new Error(
+            "Password length should be at least 6 character long"
+          );
+        }
+
+        if (address === "" || address === undefined) {
+          throw new Error("Please enter your Address");
+        }
+
+        if (role_id === "" || role_id === undefined) {
+          throw new Error("Please select your Role");
+        }
+
+        const userExists = await models.tbl_user.findOne({
+          where: { email },
+        });
+        if (userExists) {
+          throw new Error("User is already exists...!!");
+        }
+
+        const user = await models.tbl_user.create({
+          name,
+          email,
+          password: await bcrypt.hash(password, 10),
+          address,
+          role_id,
+        });
+
+        const token = await jsonwebtoken.sign(
+          { user: _.pick(user, ["id", "email", "role_id"]) },
+          SECRET,
+          {
+            expiresIn: "1y",
+          }
+        );
+
+        const userToken = {
+          token: token,
+        };
+        await models.tbl_user.update(userToken, {
+          where: { id: user.id },
+        });
+
+        const userData = await models.tbl_user.findOne({
+          where: { id: user.id },
+          include: [{ model: models.tbl_role, as: "roles" }],
+        });
+
+        return { user: userData };
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
   },
 };

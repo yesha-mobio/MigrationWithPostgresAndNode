@@ -119,6 +119,13 @@ const typeDefs = gql`
     updateBundleProduct(bundle_id: ID!, product_id: ID!, id: ID!): BundleProduct
 
     signin(email: String!, password: String!): LoginResponse!
+    register(
+      name: String!
+      email: String!
+      address: String!
+      password: String!
+      role_id: ID!
+    ): RegisterResponse!
     verifyToken(token: String!): LoginResponse!
     uploadImage(image: String!): String!
   }
