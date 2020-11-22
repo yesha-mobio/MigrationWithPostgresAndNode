@@ -314,7 +314,7 @@ module.exports = {
 
         let bundle = await models.tbl_bundle.findByPk(id);
         if (!bundle) {
-          throw new Error("BUndle is not exist.");
+          throw new Error("Bundle is not exist.");
         }
 
         await models.tbl_bundle.update(
@@ -470,18 +470,38 @@ module.exports = {
       { models }
     ) => {
       try {
+        if (id === "" || id === undefined) {
+          throw new Error("ID is Required...!!");
+        }
+
+        if (bundle_id === "" || bundle_id === undefined) {
+          throw new Error("Please Select the Bundle Name...!!");
+        }
+
+        if (product_id === "" || product_id === undefined) {
+          throw new Error("Please Select the Product Name...!!");
+        }
+
+        let bundleProduct = await models.tbl_bundle_product.findByPk(id);
+        if (!bundleProduct) {
+          throw new Error("Bundle-Product is not exist.");
+        }
+
         await models.tbl_bundle_product.update(
-          { bundle_id, product_id },
+          {
+            bundle_id: bundle_id || bundleProduct.bundle_id,
+            product_id: product_id || bundleProduct.product_id,
+          },
           { where: { id } }
         );
 
-        const bundleProduct = models.tbl_bundle_product.findByPk(id, {
+        const updatedBundleProduct = models.tbl_bundle_product.findByPk(id, {
           include: [
             { model: models.tbl_bundle, as: "bundles" },
             { model: models.tbl_product, as: "products" },
           ],
         });
-        return bundleProduct;
+        return updatedBundleProduct;
       } catch (err) {
         throw new Error(err);
       }

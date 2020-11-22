@@ -21,6 +21,7 @@ import AddProduct from "../containers/Product/addProduct.containers";
 import DisplayProduct from "./Product/displayProduct.components";
 import BundleProducts from "./BundleProduct/bundleProducts.components";
 import SingleBundleProduct from "../containers/BundleProduct/singleBundleProduct.containers";
+import EditBundleProduct from "../containers/BundleProduct/updateBundleProduct.containers";
 import AddBundleProduct from "../containers/BundleProduct/addBundleProduct.containers";
 import DisplayBundleProduct from "./BundleProduct/displayBundleProduct.components";
 import Users from "./User/users.components";
@@ -62,6 +63,10 @@ const Routes = () => {
           <Route
             path="/singleBundleProduct/:bundle_product_id"
             component={SingleBundleProduct}
+          />
+          <Route
+            path="/editBundleProduct/:bundle_product_id"
+            component={EditBundleProduct}
           />
           {/* User Routes */}
           <Route path="/user" component={Users} />

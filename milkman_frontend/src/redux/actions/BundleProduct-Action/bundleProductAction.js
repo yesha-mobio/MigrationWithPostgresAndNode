@@ -4,6 +4,7 @@ import {
   getAllBundleProducts,
   getBundleProductById,
   deleteBundleProduct,
+  updateBundleProduct,
 } from "../../../queries/bundleProduct";
 import {
   ADD_BUNDLE_PRODUCT_START,
@@ -18,6 +19,10 @@ import {
   DELETE_BUNDLE_PRODUCT_START,
   DELETE_BUNDLE_PRODUCT_FAIL,
   DELETE_BUNDLE_PRODUCT_SUCCESS,
+  EDIT_BUNDLE_PRODUCT_START,
+  EDIT_BUNDLE_PRODUCT_FAIL,
+  EDIT_BUNDLE_PRODUCT_SUCCESS,
+  SELECTED_BUNDLE_PRODUCT,
 } from "./actionType";
 
 const addBundleProductStart = {
@@ -140,5 +145,48 @@ export const removeBundleProduct = (bundleProductId) => {
     } else {
       dispatch(deleteBundleProductSuccess(bundleProductId));
     }
+  };
+};
+
+const editBundleProductStart = {
+  type: EDIT_BUNDLE_PRODUCT_START,
+};
+
+const editBundleProductFail = {
+  type: EDIT_BUNDLE_PRODUCT_FAIL,
+};
+
+const editBundleProductSuccess = (editBundleProduct) => {
+  return {
+    type: EDIT_BUNDLE_PRODUCT_SUCCESS,
+    editBundleProduct,
+  };
+};
+
+export const updateSingleBundleProduct = ({ id, bundle_id, product_id }) => {
+  return async (dispatch) => {
+    dispatch(editBundleProductStart);
+
+    const { data } = await client.mutate({
+      mutation: updateBundleProduct,
+      variables: {
+        id,
+        bundle_id,
+        product_id,
+      },
+      refetchQueries: [{ query: getAllBundleProducts }],
+    });
+
+    if (data.error) {
+      dispatch(editBundleProductFail);
+    } else {
+      dispatch(editBundleProductSuccess(data.updateBundleProduct));
+    }
+  };
+};
+
+export const setSelectedBundleProduct = (selectedBundleProduct) => {
+  return async (dispatch) => {
+    dispatch({ type: SELECTED_BUNDLE_PRODUCT, selectedBundleProduct });
   };
 };

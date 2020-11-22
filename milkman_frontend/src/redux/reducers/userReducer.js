@@ -100,7 +100,7 @@ const UserReducer = (state = initialState, action) => {
         loading: false,
         userList: [
           ...state.userList.filter(({ id }) => {
-            return id !== action.id;
+            return id !== action.userId;
           }),
         ],
       };

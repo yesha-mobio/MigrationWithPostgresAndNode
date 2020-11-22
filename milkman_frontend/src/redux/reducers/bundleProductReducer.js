@@ -11,6 +11,10 @@ import {
   DELETE_BUNDLE_PRODUCT_START,
   DELETE_BUNDLE_PRODUCT_FAIL,
   DELETE_BUNDLE_PRODUCT_SUCCESS,
+  EDIT_BUNDLE_PRODUCT_START,
+  EDIT_BUNDLE_PRODUCT_FAIL,
+  EDIT_BUNDLE_PRODUCT_SUCCESS,
+  SELECTED_BUNDLE_PRODUCT,
 } from "../actions/BundleProduct-Action/actionType";
 
 const initialState = {
@@ -19,7 +23,7 @@ const initialState = {
   addBundleProduct: null,
   bundleProductList: [],
   singleBundleProduct: null,
-  //   updateBundleProduct: null,
+  editBundleProduct: null,
 };
 
 const BundleProductReducer = (state = initialState, action) => {
@@ -100,9 +104,33 @@ const BundleProductReducer = (state = initialState, action) => {
         loading: false,
         bundleProductList: [
           ...state.bundleProductList.filter(({ id }) => {
-            return id !== action.id;
+            return id !== action.bundleProductId;
           }),
         ],
+      };
+    case EDIT_BUNDLE_PRODUCT_START:
+      return {
+        ...state,
+        error: false,
+        loading: true,
+      };
+    case EDIT_BUNDLE_PRODUCT_FAIL:
+      return {
+        ...state,
+        error: true,
+        loading: false,
+      };
+    case EDIT_BUNDLE_PRODUCT_SUCCESS:
+      return {
+        ...state,
+        error: false,
+        loading: false,
+        editBundleProduct: action.selectedBundleProduct,
+      };
+    case SELECTED_BUNDLE_PRODUCT:
+      return {
+        ...state,
+        editBundleProduct: action.selectedBundleProduct,
       };
     default:
       return state;
