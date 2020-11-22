@@ -22,6 +22,8 @@ const getUserById = gql`
       name
       email
       address
+      password
+      role_id
       roles {
         name
       }
@@ -72,12 +74,28 @@ const deleteUser = gql`
 `;
 
 const updateUser = gql`
-  mutation($name: String!, $email: String!, $address: String!) {
-    createUser(name: $name, email: $email, address: $address) {
+  mutation(
+    $id: ID!
+    $name: String!
+    $email: String!
+    $address: String!
+    $role_id: ID!
+  ) {
+    updateUser(
+      id: $id
+      name: $name
+      email: $email
+      address: $address
+      role_id: $role_id
+    ) {
       id
       name
       email
       address
+      role_id
+      roles {
+        name
+      }
     }
   }
 `;

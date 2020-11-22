@@ -1,9 +1,6 @@
 const bcrypt = require("bcrypt");
 const jsonwebtoken = require("jsonwebtoken");
 const _ = require("lodash");
-const { createWriteStreame } = require("fs");
-const { resolve } = require("path");
-const { reject } = require("lodash");
 require("dotenv").config();
 
 module.exports = {
@@ -146,8 +143,26 @@ module.exports = {
     },
     updateRole: async (root, { name, id }, { models }) => {
       try {
-        await models.tbl_role.update({ name }, { where: { id } });
-        const updatedRole = await models.tbl_role.findByPk(id);
+        if (id === "" || id === undefined) {
+          throw new Error("ID is Required...!!");
+        }
+
+        if (name === "" || name === undefined) {
+          throw new Error("Please Enter Name...!!");
+        }
+
+        let role = await models.tbl_role.findByPk(id);
+        if (!role) {
+          throw new Error("Role is not exist.");
+        }
+
+        await models.tbl_role.update(
+          { name: name || role.name },
+          { where: { id } }
+        );
+
+        const updatedRole = await models.tbl_role.findOne({ where: { id } });
+
         return updatedRole;
       } catch (err) {
         throw new Error(err);
@@ -236,15 +251,51 @@ module.exports = {
         throw new Error(err);
       }
     },
-    updateUser: async (root, { name, email, address, id }, { models }) => {
+    updateUser: async (
+      root,
+      { name, email, address, role_id, id },
+      { models }
+    ) => {
       try {
+        if (id === "" || id === undefined) {
+          throw new Error("ID is Required...!!");
+        }
+
+        if (name === "" || name === undefined) {
+          throw new Error("Please Enter your Name...!!");
+        }
+
+        if (email === "" || email === undefined) {
+          throw new Error("Please Enter your Email...!!");
+        }
+
+        if (address === "" || address === undefined) {
+          throw new Error("Please Enter your Address...!!");
+        }
+
+        if (role_id === "" || role_id === undefined) {
+          throw new Error("Please Select your Role...!!");
+        }
+
+        let user = await models.tbl_user.findByPk(id);
+        if (!user) {
+          throw new Error("User is not exist.");
+        }
+
         await models.tbl_user.update(
-          { name, email, address },
+          {
+            name: name || user.name,
+            email: email || user.email,
+            address: address || user.address,
+            role_id: role_id || user.role_id,
+          },
           { where: { id } }
         );
+
         const updatedUser = await models.tbl_user.findByPk(id, {
           include: [{ model: models.tbl_role, as: "roles" }],
         });
+
         return updatedUser;
       } catch (err) {
         throw new Error(err);
@@ -285,11 +336,35 @@ module.exports = {
     },
     updateBundle: async (root, { name, description, id }, { models }) => {
       try {
+        if (id === "" || id === undefined) {
+          throw new Error("ID is Required...!!");
+        }
+
+        if (name === "" || name === undefined) {
+          throw new Error("Please Enter Name...!!");
+        }
+
+        if (description === "" || description === undefined) {
+          throw new Error("Please Enter description...!!");
+        }
+
+        let bundle = await models.tbl_bundle.findByPk(id);
+        if (!bundle) {
+          throw new Error("Bundle is not exist.");
+        }
+
         await models.tbl_bundle.update(
-          { name, description },
+          {
+            name: name || bundle.name,
+            description: description || bundle.description,
+          },
           { where: { id } }
         );
-        const updatedBundle = await models.tbl_bundle.findByPk(id);
+
+        const updatedBundle = await models.tbl_bundle.findOne({
+          where: { id },
+        });
+
         return updatedBundle;
       } catch (err) {
         throw new Error(err);
@@ -353,11 +428,40 @@ module.exports = {
       { models }
     ) => {
       try {
+        if (id === "" || id === undefined) {
+          throw new Error("ID is Required...!!");
+        }
+
+        if (name === "" || name === undefined) {
+          throw new Error("Please Enter Name...!!");
+        }
+
+        if (description === "" || description === undefined) {
+          throw new Error("Please Enter Description...!!");
+        }
+
+        if (price === "" || price === undefined) {
+          throw new Error("Please Enter Price...!!");
+        }
+
+        let product = await models.tbl_product.findByPk(id);
+        if (!product) {
+          throw new Error("Product is not exist.");
+        }
+
         await models.tbl_product.update(
-          { name, description, price },
+          {
+            name: name || product.name,
+            description: description || product.description,
+            price: price || product.price,
+          },
           { where: { id } }
         );
-        const updatedProduct = await models.tbl_product.findByPk(id);
+
+        const updatedProduct = await models.tbl_product.findOne({
+          where: { id },
+        });
+
         return updatedProduct;
       } catch (err) {
         throw new Error(err);
@@ -402,18 +506,38 @@ module.exports = {
       { models }
     ) => {
       try {
+        if (id === "" || id === undefined) {
+          throw new Error("ID is Required...!!");
+        }
+
+        if (bundle_id === "" || bundle_id === undefined) {
+          throw new Error("Please Select the Bundle Name...!!");
+        }
+
+        if (product_id === "" || product_id === undefined) {
+          throw new Error("Please Select the Product Name...!!");
+        }
+
+        let bundleProduct = await models.tbl_bundle_product.findByPk(id);
+        if (!bundleProduct) {
+          throw new Error("Bundle-Product is not exist.");
+        }
+
         await models.tbl_bundle_product.update(
-          { bundle_id, product_id },
+          {
+            bundle_id: bundle_id || bundleProduct.bundle_id,
+            product_id: product_id || bundleProduct.product_id,
+          },
           { where: { id } }
         );
 
-        const bundleProduct = models.tbl_bundle_product.findByPk(id, {
+        const updatedBundleProduct = models.tbl_bundle_product.findByPk(id, {
           include: [
             { model: models.tbl_bundle, as: "bundles" },
             { model: models.tbl_product, as: "products" },
           ],
         });
-        return bundleProduct;
+        return updatedBundleProduct;
       } catch (err) {
         throw new Error(err);
       }
@@ -449,6 +573,78 @@ module.exports = {
       };
 
       return { token: userToken.token, user };
+    },
+    register: async (
+      root,
+      { name, email, password, address, role_id },
+      { models, SECRET }
+    ) => {
+      try {
+        if (name === "" || name === undefined) {
+          throw new Error("Please enter your Name");
+        }
+
+        if (email === "" || email === undefined) {
+          throw new Error("Please enter your Email");
+        }
+
+        if (password === "" || password === undefined) {
+          throw new Error("Please enter Password");
+        }
+
+        if (password.length < 6) {
+          throw new Error(
+            "Password length should be at least 6 character long"
+          );
+        }
+
+        if (address === "" || address === undefined) {
+          throw new Error("Please enter your Address");
+        }
+
+        if (role_id === "" || role_id === undefined) {
+          throw new Error("Please select your Role");
+        }
+
+        const userExists = await models.tbl_user.findOne({
+          where: { email },
+        });
+        if (userExists) {
+          throw new Error("User is already exists...!!");
+        }
+
+        const user = await models.tbl_user.create({
+          name,
+          email,
+          password: await bcrypt.hash(password, 10),
+          address,
+          role_id,
+        });
+
+        const token = await jsonwebtoken.sign(
+          { user: _.pick(user, ["id", "email", "role_id"]) },
+          SECRET,
+          {
+            expiresIn: "1y",
+          }
+        );
+
+        const userToken = {
+          token: token,
+        };
+        await models.tbl_user.update(userToken, {
+          where: { id: user.id },
+        });
+
+        const userData = await models.tbl_user.findOne({
+          where: { id: user.id },
+          include: [{ model: models.tbl_role, as: "roles" }],
+        });
+
+        return { user: userData };
+      } catch (err) {
+        throw new Error(err);
+      }
     },
   },
 };

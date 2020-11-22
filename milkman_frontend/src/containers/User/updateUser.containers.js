@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import {
   Card,
   CardHeader,
@@ -12,27 +13,31 @@ import {
   Row,
   Col,
 } from "reactstrap";
-import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 
 import Header from "../../components/Core/header";
-import { addProduct } from "../../redux/actions/Product-Action/productAction";
+import { getRoles } from "../../redux/actions/Role-Action/roleAction";
+import { updateSingleUser } from "../../redux/actions/User-Action/userAction";
 import { isAuthenticated } from "../../authentication/authentication";
 
-class AddProduct extends Component {
+class UpdateUser extends Component {
   constructor(props) {
-    super();
+    super(props);
+    const { editUser, history } = props;
+    if (!editUser) {
+      history.push("/displayUsers");
+    }
     this.state = {
-      name: "",
-      description: "",
-      price: 0,
+      ...editUser,
       error: "",
       success: false,
       errorMessage: "",
     };
+
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-    this.goBackBowser = this.goBackBowser.bind(this);
+    this.displayUserHandler = this.displayUserHandler.bind(this);
+    this.displayRoles = this.displayRoles.bind(this);
   }
 
   onChange = (event) => {
@@ -42,18 +47,15 @@ class AddProduct extends Component {
 
   onSubmit = async (event) => {
     event.preventDefault();
-    const Price = parseFloat(this.state.price);
     await this.props
-      .addProduct(this.state.name, this.state.description, Price)
+      .updateSingleUser(this.state)
       .then(() => {
         this.setState({
           error: false,
           success: true,
-          name: "",
-          description: "",
-          price: 0,
           errorMessage: "",
         });
+        this.props.history.push("/displayUsers");
       })
       .catch((err) => {
         if (err) {
@@ -66,9 +68,27 @@ class AddProduct extends Component {
       });
   };
 
-  goBackBowser = () => {
-    this.props.history.push("/displayProducts");
+  displayUserHandler = () => {
+    this.props.history.push("/displayUsers");
   };
+
+  displayRoles = () => {
+    var { roleList } = this.props;
+    return roleList.map((role) => {
+      return (
+        <option key={role.id} value={role.id}>
+          {role.name}
+        </option>
+      );
+    });
+  };
+
+  componentDidMount() {
+    const { getRoles } = this.props;
+    if (isAuthenticated() && isAuthenticated().user.role_id === 1) {
+      getRoles();
+    }
+  }
 
   render() {
     const successMessage = () => {
@@ -82,7 +102,7 @@ class AddProduct extends Component {
                 marginTop: "10px",
               }}
             >
-              Product is added...!
+              User is updated...!
             </div>
           </div>
         </div>
@@ -107,7 +127,7 @@ class AddProduct extends Component {
       );
     };
 
-    const addProductForm =
+    const updateUserForm =
       isAuthenticated() && isAuthenticated().user.role_id === 1 ? (
         <Container>
           <Row>
@@ -120,44 +140,68 @@ class AddProduct extends Component {
                     background: "#1ABC9C",
                   }}
                 >
-                  <h5>Add a new Product</h5>
+                  <h5>Update User</h5>
                 </CardHeader>
                 {successMessage()}
                 {errorMessage()}
                 <CardBody>
                   <Form onSubmit={this.onSubmit}>
                     <FormGroup>
-                      <Label for="productName">Name</Label>
+                      <Label for="userId">User-ID</Label>
+                      <Input
+                        type="text"
+                        name="id"
+                        id="userId"
+                        value={this.state.id}
+                        readOnly
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <Label for="userName">Name</Label>
                       <Input
                         type="text"
                         name="name"
-                        id="productName"
-                        placeholder="Enter the name of the Product"
+                        id="userName"
+                        placeholder="Enter your Name"
                         onChange={this.onChange}
                         value={this.state.name}
                       />
                     </FormGroup>
                     <FormGroup>
-                      <Label for="productDescription">Description</Label>
+                      <Label for="userEmail">Email</Label>
                       <Input
-                        type="text"
-                        name="description"
-                        id="productDescription"
-                        placeholder="Enter the Description"
+                        type="email"
+                        name="email"
+                        id="userEmail"
+                        placeholder="Enter your Email"
                         onChange={this.onChange}
-                        value={this.state.description}
+                        value={this.state.email}
                       />
                     </FormGroup>
                     <FormGroup>
-                      <Label for="productPrice">Price</Label>
+                      <Label for="userAddress">Address</Label>
                       <Input
                         type="text"
-                        name="price"
-                        id="productPrice"
-                        placeholder="Enter the Price"
+                        name="address"
+                        id="userAddress"
+                        placeholder="Enter your Address"
                         onChange={this.onChange}
-                        value={this.state.price}
+                        value={this.state.address}
                       />
+                    </FormGroup>
+                    <FormGroup>
+                      <Label for="userRole">Role</Label>
+                      <Input
+                        type="select"
+                        name="role_id"
+                        id="userRole"
+                        placeholder="Select the Role"
+                        onChange={this.onChange}
+                        value={this.state.role_id}
+                      >
+                        <option>Select Role</option>
+                        {this.displayRoles()}
+                      </Input>
                     </FormGroup>
                     <Button
                       style={{
@@ -166,18 +210,18 @@ class AddProduct extends Component {
                         borderColor: "#1ABC9C",
                       }}
                     >
-                      <b>Add New Product</b>
+                      <b>Update User</b>
                     </Button>
                     &nbsp; &nbsp;
                     <Button
-                      onClick={this.goBackBowser}
+                      onClick={this.displayUserHandler}
                       style={{
                         background: "#BC1A4B",
                         color: "#1ABC9C",
                         borderColor: "#BC1A4B",
                       }}
                     >
-                      <b>List all Products</b>
+                      <b>Cancel</b>
                     </Button>
                   </Form>
                 </CardBody>
@@ -194,28 +238,29 @@ class AddProduct extends Component {
     return (
       <div>
         <Header />
-        {addProductForm}
+        {updateUserForm}
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ product }) => {
+const mapStateToProps = ({ user, role }) => {
   return {
-    error: product.error,
-    loading: product.loading,
-    addProduct: product.addProduct,
+    error: user.error,
+    loading: user.loading,
+    editUser: user.editUser,
+    roleList: role.roleList,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addProduct: (name, description, price) =>
-      dispatch(addProduct(name, description, price)),
+    getRoles: () => dispatch(getRoles()),
+    updateSingleUser: (userData) => dispatch(updateSingleUser(userData)),
   };
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(AddProduct));
+)(withRouter(UpdateUser));

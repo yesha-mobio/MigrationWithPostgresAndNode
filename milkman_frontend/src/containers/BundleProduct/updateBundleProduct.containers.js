@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import {
   Card,
   CardHeader,
@@ -13,42 +14,66 @@ import {
   Col,
 } from "reactstrap";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
 
 import Header from "../../components/Core/header";
-import { addBundleProduct } from "../../redux/actions/BundleProduct-Action/bundleProductAction";
 import { getBundles } from "../../redux/actions/Bundle-Action/bundleAction";
 import { getProducts } from "../../redux/actions/Product-Action/productAction";
+import { updateSingleBundleProduct } from "../../redux/actions/BundleProduct-Action/bundleProductAction";
 import { isAuthenticated } from "../../authentication/authentication";
 
-class AddBundleProduct extends Component {
+class UpdateBundleProduct extends Component {
   constructor(props) {
-    super();
+    super(props);
+    const { editBundleProduct, history } = props;
+    if (!editBundleProduct) {
+      history.push("/displayBundleProducts");
+    }
     this.state = {
-      bundle_id: "",
-      product_id: "",
+      ...editBundleProduct,
       error: "",
       success: false,
       errorMessage: "",
     };
+
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-    this.goBackBowser = this.goBackBowser.bind(this);
+    this.displayBundleProductHandler = this.displayBundleProductHandler.bind(
+      this
+    );
     this.displayBundles = this.displayBundles.bind(this);
     this.displayProducts = this.displayProducts.bind(this);
-  }
-
-  componentDidMount() {
-    const { getBundles, getProducts } = this.props;
-    if (isAuthenticated() && isAuthenticated().user.role_id === 1) {
-      getBundles();
-      getProducts();
-    }
   }
 
   onChange = (event) => {
     const { name, value } = event.target;
     this.setState({ [name]: value });
+  };
+
+  onSubmit = async (event) => {
+    event.preventDefault();
+    await this.props
+      .updateSingleBundleProduct(this.state)
+      .then(() => {
+        this.setState({
+          error: false,
+          success: true,
+          errorMessage: "",
+        });
+        this.props.history.push("/displayBundleProducts");
+      })
+      .catch((err) => {
+        if (err) {
+          this.setState({
+            error: true,
+            success: false,
+            errorMessage: err.message.slice(22),
+          });
+        }
+      });
+  };
+
+  displayBundleProductHandler = () => {
+    this.props.history.push("/displayBundleProducts");
   };
 
   displayBundles = () => {
@@ -73,33 +98,13 @@ class AddBundleProduct extends Component {
     });
   };
 
-  onSubmit = (event) => {
-    event.preventDefault();
-    this.props
-      .addBundleProduct(this.state.bundle_id, this.state.product_id)
-      .then(() => {
-        this.setState({
-          error: false,
-          success: true,
-          bundle_id: "",
-          product_id: "",
-          errorMessage: "",
-        });
-      })
-      .catch((err) => {
-        if (err) {
-          this.setState({
-            error: true,
-            success: false,
-            errorMessage: err.message.slice(22),
-          });
-        }
-      });
-  };
-
-  goBackBowser = () => {
-    this.props.history.push("/displayBundleProducts");
-  };
+  componentDidMount() {
+    const { getBundles, getProducts } = this.props;
+    if (isAuthenticated() && isAuthenticated().user.role_id === 1) {
+      getBundles();
+      getProducts();
+    }
+  }
 
   render() {
     const successMessage = () => {
@@ -113,7 +118,7 @@ class AddBundleProduct extends Component {
                 marginTop: "10px",
               }}
             >
-              Bundle-Product is added...!
+              Bundle-Product is updated...!
             </div>
           </div>
         </div>
@@ -122,25 +127,23 @@ class AddBundleProduct extends Component {
 
     const errorMessage = () => {
       return (
-        <div>
-          <div className="row">
-            <div className="col-md-6 offset-sm-3 text-left">
-              <div
-                className="alert alert-danger"
-                style={{
-                  display: this.state.error ? "" : "none",
-                  marginTop: "10px",
-                }}
-              >
-                {this.state.errorMessage}
-              </div>
+        <div className="row">
+          <div className="col-md-6 offset-sm-3 text-left">
+            <div
+              className="alert alert-danger"
+              style={{
+                display: this.state.error ? "" : "none",
+                marginTop: "10px",
+              }}
+            >
+              {this.state.errorMessage}
             </div>
           </div>
         </div>
       );
     };
 
-    const addBundleProductForm =
+    const updateBundleProductForm =
       isAuthenticated() && isAuthenticated().user.role_id === 1 ? (
         <Container>
           <Row>
@@ -153,12 +156,22 @@ class AddBundleProduct extends Component {
                     background: "#1ABC9C",
                   }}
                 >
-                  <h5>Add a new Bundle-Product</h5>
+                  <h5>Update Bundle-Product</h5>
                 </CardHeader>
                 {successMessage()}
                 {errorMessage()}
                 <CardBody>
                   <Form onSubmit={this.onSubmit}>
+                    <FormGroup>
+                      <Label for="bundleProductId">BundleProduct-ID</Label>
+                      <Input
+                        type="text"
+                        name="id"
+                        id="bundleProductId"
+                        value={this.state.id}
+                        readOnly
+                      />
+                    </FormGroup>
                     <FormGroup>
                       <Label for="bundle">Bundle</Label>
                       <Input
@@ -194,18 +207,18 @@ class AddBundleProduct extends Component {
                         borderColor: "#1ABC9C",
                       }}
                     >
-                      <b>Add New Bundle-Product</b>
+                      <b>Update Bundle-Product</b>
                     </Button>
                     &nbsp; &nbsp;
                     <Button
-                      onClick={this.goBackBowser}
+                      onClick={this.displayBundleProductHandler}
                       style={{
                         background: "#BC1A4B",
                         color: "#1ABC9C",
                         borderColor: "#BC1A4B",
                       }}
                     >
-                      <b>List all Bundle-Products</b>
+                      <b>Cancel</b>
                     </Button>
                   </Form>
                 </CardBody>
@@ -222,7 +235,7 @@ class AddBundleProduct extends Component {
     return (
       <div>
         <Header />
-        {addBundleProductForm}
+        {updateBundleProductForm}
       </div>
     );
   }
@@ -232,7 +245,7 @@ const mapStateToProps = ({ bundleProduct, bundle, product }) => {
   return {
     error: bundleProduct.error,
     loading: bundleProduct.loading,
-    addBundleProduct: bundleProduct.addBundleProduct,
+    editBundleProduct: bundleProduct.editBundleProduct,
     bundleList: bundle.bundleList,
     productList: product.productList,
   };
@@ -242,12 +255,12 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getBundles: () => dispatch(getBundles()),
     getProducts: () => dispatch(getProducts()),
-    addBundleProduct: (bundle_id, product_id) =>
-      dispatch(addBundleProduct(bundle_id, product_id)),
+    updateSingleBundleProduct: (bundleProductData) =>
+      dispatch(updateSingleBundleProduct(bundleProductData)),
   };
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(AddBundleProduct));
+)(withRouter(UpdateBundleProduct));

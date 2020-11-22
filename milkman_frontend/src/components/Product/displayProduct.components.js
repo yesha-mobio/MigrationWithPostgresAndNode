@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { graphql } from "react-apollo";
 import {
   Table,
   Container,
@@ -10,35 +9,57 @@ import {
   CardBody,
   Button,
 } from "reactstrap";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 
 import Header from "../Core/header";
 import ProductTableRow from "./productTableRow.components";
-import { getAllProducts } from "../../queries/product";
-import { withRouter } from "react-router-dom";
+import { getProducts } from "../../redux/actions/Product-Action/productAction";
 import { isAuthenticated } from "../../authentication/authentication";
+import Spinner from "../UI/Spinner/Spinner";
 
 class DisplayProduct extends Component {
   constructor(props) {
     super();
     this.goBackBowser = this.goBackBowser.bind(this);
-    this.displayProductsHandler = this.displayProductsHandler.bind(this);
   }
 
-  goBackBowser() {
-    this.props.history.push("/product");
-  }
-
-  displayProductsHandler() {
-    var data = this.props.data;
-
-    if (!data.loading) {
-      return data.getAllProducts.map((product, i) => {
-        return <ProductTableRow key={i} obj={product} />;
-      });
+  componentDidMount() {
+    const { getProducts } = this.props;
+    if (isAuthenticated() && isAuthenticated().user.role_id === 1) {
+      getProducts();
     }
   }
 
+  goBackBowser = () => {
+    this.props.history.push("/product");
+  };
+
   render() {
+    const displayProductsHandler = () => {
+      const { error, loading, productList } = this.props;
+      if (error) {
+        return (
+          <tr>
+            <td>{error}</td>
+          </tr>
+        );
+      }
+      if (loading) {
+        return (
+          <tr>
+            <td colSpan="5">
+              <Spinner />
+            </td>
+          </tr>
+        );
+      } else {
+        return productList.map((product, i) => {
+          return <ProductTableRow key={i} obj={product} />;
+        });
+      }
+    };
+
     const DisplayProducts =
       isAuthenticated() && isAuthenticated().user.role_id === 1 ? (
         <Container>
@@ -65,7 +86,7 @@ class DisplayProduct extends Component {
                         <th colSpan="3">Actions</th>
                       </tr>
                     </thead>
-                    <tbody>{this.displayProductsHandler()}</tbody>
+                    <tbody>{displayProductsHandler()}</tbody>
                   </Table>
                   <Button
                     onClick={this.goBackBowser}
@@ -96,4 +117,21 @@ class DisplayProduct extends Component {
   }
 }
 
-export default withRouter(graphql(getAllProducts)(DisplayProduct));
+const mapStateToProps = ({ product }) => {
+  return {
+    error: product.error,
+    loading: product.loading,
+    productList: product.productList,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getProducts: () => dispatch(getProducts()),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(DisplayProduct));

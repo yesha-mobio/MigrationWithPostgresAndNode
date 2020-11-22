@@ -4,12 +4,10 @@ import BaseModal from "../UI/baseModal";
 
 const Bundles = (props) => {
   const addBundle = () => {
-    console.log(props);
     return props.history.push("/addBundle");
   };
 
   const displayBundles = () => {
-    console.log(props);
     return props.history.push("/displayBundles");
   };
 

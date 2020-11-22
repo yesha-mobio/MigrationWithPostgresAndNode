@@ -16,28 +16,30 @@ import {
 import { connect } from "react-redux";
 
 import Header from "../../components/Core/header";
-import { viewBundle } from "../../redux/actions/Bundle-Action/bundleAction";
+import { viewRole } from "../../redux/actions/Role-Action/roleAction";
 import Spinner from "../../components/UI/Spinner/Spinner";
+import { isAuthenticated } from "../../authentication/authentication";
 
-class SingleBundle extends Component {
+class SingleRole extends Component {
   constructor(props) {
     super();
   }
 
   componentDidMount() {
-    const {
-      viewBundle,
-      match: {
-        params: { bundle_id },
-      },
-    } = this.props;
-    viewBundle(bundle_id);
+    if (isAuthenticated() && isAuthenticated().user.role_id === 1) {
+      const {
+        viewRole,
+        match: {
+          params: { role_id },
+        },
+      } = this.props;
+      viewRole(role_id);
+    }
   }
 
   render() {
-    console.log(this.props);
-    const { singleBundle } = this.props;
-    const singleBundleForm = singleBundle ? (
+    const { singleRole } = this.props;
+    const singleRoleForm = singleRole ? (
       <Container>
         <Row>
           <Col sm="12">
@@ -49,42 +51,30 @@ class SingleBundle extends Component {
                   background: "#1ABC9C",
                 }}
               >
-                <h5>Single Bundle</h5>
+                <h5>Single Role</h5>
               </CardHeader>
               <CardBody>
-                {/* <Spinner /> */}
                 <Form>
                   <FormGroup>
-                    <Label for="bundleName">Name</Label>
+                    <Label for="roleName">Name</Label>
                     <Input
                       type="text"
                       name="name"
-                      id="bundleName"
-                      placeholder="Enter the name of the Bundle"
-                      value={singleBundle.name}
-                      readOnly
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <Label for="bundleDescription">Description</Label>
-                    <Input
-                      type="text"
-                      name="description"
-                      id="bundleDescription"
-                      placeholder="Enter the Description"
-                      value={singleBundle.description}
+                      id="roleName"
+                      placeholder="Enter the name of the Role"
+                      value={singleRole.name}
                       readOnly
                     />
                   </FormGroup>
                   <Button
-                    onClick={() => this.props.history.push("/displayBundles")}
+                    onClick={() => this.props.history.push("/displayRoles")}
                     style={{
                       background: "#BC1A4B",
                       color: "#1ABC9C",
                       borderColor: "#BC1A4B",
                     }}
                   >
-                    <b>List all Bundles</b>
+                    <b>List all Roles</b>
                   </Button>
                 </Form>
               </CardBody>
@@ -104,7 +94,7 @@ class SingleBundle extends Component {
                   background: "#1ABC9C",
                 }}
               >
-                <h5>Single Bundle</h5>
+                <h5>Single Role</h5>
               </CardHeader>
               <CardBody>
                 <h3 style={{ color: "red", textAlign: "center" }}>
@@ -116,30 +106,37 @@ class SingleBundle extends Component {
         </Row>
       </Container>
     );
+
     return (
       <div>
         <Header />
-        {singleBundleForm}
+        {isAuthenticated() && isAuthenticated().user.role_id === 1 ? (
+          singleRoleForm
+        ) : (
+          <h1 style={{ textAlign: "center", marginTop: "50px", color: "red" }}>
+            You are not Authenticated...!!
+          </h1>
+        )}
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ bundle }) => {
+const mapStateToProps = ({ role }) => {
   return {
-    error: bundle.error,
-    loading: bundle.loading,
-    singleBundle: bundle.singleBundle,
+    error: role.error,
+    loading: role.loading,
+    singleRole: role.singleRole,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    viewBundle: (bundleId) => dispatch(viewBundle(bundleId)),
+    viewRole: (roleId) => dispatch(viewRole(roleId)),
   };
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(SingleBundle));
+)(withRouter(SingleRole));

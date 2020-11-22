@@ -4,12 +4,10 @@ import BaseModal from "../UI/baseModal";
 
 const products = (props) => {
   const addProduct = () => {
-    console.log(props);
     return props.history.push("/addProduct");
   };
 
   const displayProduct = () => {
-    console.log(props);
     return props.history.push("/displayProducts");
   };
 

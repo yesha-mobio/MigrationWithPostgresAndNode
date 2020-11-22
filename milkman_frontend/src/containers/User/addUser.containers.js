@@ -16,33 +16,34 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
 import Header from "../../components/Core/header";
-import { addBundleProduct } from "../../redux/actions/BundleProduct-Action/bundleProductAction";
-import { getBundles } from "../../redux/actions/Bundle-Action/bundleAction";
-import { getProducts } from "../../redux/actions/Product-Action/productAction";
+import { addUser } from "../../redux/actions/User-Action/userAction";
 import { isAuthenticated } from "../../authentication/authentication";
+import { getRoles } from "../../redux/actions/Role-Action/roleAction";
 
-class AddBundleProduct extends Component {
+class AddUser extends Component {
   constructor(props) {
     super();
     this.state = {
-      bundle_id: "",
-      product_id: "",
+      name: "",
+      email: "",
+      address: "",
+      password: "",
+      role_id: "",
       error: "",
       success: false,
       errorMessage: "",
     };
+
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.goBackBowser = this.goBackBowser.bind(this);
-    this.displayBundles = this.displayBundles.bind(this);
-    this.displayProducts = this.displayProducts.bind(this);
+    this.displayRoles = this.displayRoles.bind(this);
   }
 
   componentDidMount() {
-    const { getBundles, getProducts } = this.props;
+    const { getRoles } = this.props;
     if (isAuthenticated() && isAuthenticated().user.role_id === 1) {
-      getBundles();
-      getProducts();
+      getRoles();
     }
   }
 
@@ -51,38 +52,25 @@ class AddBundleProduct extends Component {
     this.setState({ [name]: value });
   };
 
-  displayBundles = () => {
-    var { bundleList } = this.props;
-    return bundleList.map((bundle) => {
-      return (
-        <option key={bundle.id} value={bundle.id}>
-          {bundle.name}
-        </option>
-      );
-    });
-  };
-
-  displayProducts = () => {
-    var { productList } = this.props;
-    return productList.map((product) => {
-      return (
-        <option key={product.id} value={product.id}>
-          {product.name}
-        </option>
-      );
-    });
-  };
-
-  onSubmit = (event) => {
+  onSubmit = async (event) => {
     event.preventDefault();
-    this.props
-      .addBundleProduct(this.state.bundle_id, this.state.product_id)
+    await this.props
+      .addUser(
+        this.state.name,
+        this.state.email,
+        this.state.address,
+        this.state.password,
+        this.state.role_id
+      )
       .then(() => {
         this.setState({
           error: false,
           success: true,
-          bundle_id: "",
-          product_id: "",
+          name: "",
+          email: "",
+          address: "",
+          password: "",
+          role_id: "",
           errorMessage: "",
         });
       })
@@ -91,14 +79,25 @@ class AddBundleProduct extends Component {
           this.setState({
             error: true,
             success: false,
-            errorMessage: err.message.slice(22),
+            errorMessage: err.message,
           });
         }
       });
   };
 
+  displayRoles = () => {
+    var { roleList } = this.props;
+    return roleList.map((role) => {
+      return (
+        <option key={role.id} value={role.id}>
+          {role.name}
+        </option>
+      );
+    });
+  };
+
   goBackBowser = () => {
-    this.props.history.push("/displayBundleProducts");
+    this.props.history.push("/displayUsers");
   };
 
   render() {
@@ -113,7 +112,7 @@ class AddBundleProduct extends Component {
                 marginTop: "10px",
               }}
             >
-              Bundle-Product is added...!
+              User is added...!
             </div>
           </div>
         </div>
@@ -122,25 +121,23 @@ class AddBundleProduct extends Component {
 
     const errorMessage = () => {
       return (
-        <div>
-          <div className="row">
-            <div className="col-md-6 offset-sm-3 text-left">
-              <div
-                className="alert alert-danger"
-                style={{
-                  display: this.state.error ? "" : "none",
-                  marginTop: "10px",
-                }}
-              >
-                {this.state.errorMessage}
-              </div>
+        <div className="row">
+          <div className="col-md-6 offset-sm-3 text-left">
+            <div
+              className="alert alert-danger"
+              style={{
+                display: this.state.error ? "" : "none",
+                marginTop: "10px",
+              }}
+            >
+              {this.state.errorMessage}
             </div>
           </div>
         </div>
       );
     };
 
-    const addBundleProductForm =
+    const addUserForm =
       isAuthenticated() && isAuthenticated().user.role_id === 1 ? (
         <Container>
           <Row>
@@ -153,38 +150,67 @@ class AddBundleProduct extends Component {
                     background: "#1ABC9C",
                   }}
                 >
-                  <h5>Add a new Bundle-Product</h5>
+                  <h5>Add a new User</h5>
                 </CardHeader>
                 {successMessage()}
                 {errorMessage()}
                 <CardBody>
                   <Form onSubmit={this.onSubmit}>
                     <FormGroup>
-                      <Label for="bundle">Bundle</Label>
+                      <Label for="userName">Name</Label>
                       <Input
-                        type="select"
-                        name="bundle_id"
-                        id="bundle"
-                        placeholder="Select the Bundle"
+                        type="text"
+                        name="name"
+                        id="userName"
+                        placeholder="Enter your Name"
                         onChange={this.onChange}
-                        value={this.state.bundle_id}
-                      >
-                        <option>Select Bundle</option>
-                        {this.displayBundles()}
-                      </Input>
+                        value={this.state.name}
+                      />
                     </FormGroup>
                     <FormGroup>
-                      <Label for="product">Product</Label>
+                      <Label for="userEmail">Email</Label>
+                      <Input
+                        type="email"
+                        name="email"
+                        id="userEmail"
+                        placeholder="Enter your Email"
+                        onChange={this.onChange}
+                        value={this.state.email}
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <Label for="userPassword">Password</Label>
+                      <Input
+                        type="password"
+                        name="password"
+                        id="userPassword"
+                        placeholder="Enter your Password"
+                        onChange={this.onChange}
+                        value={this.state.password}
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <Label for="userAddress">Address</Label>
+                      <Input
+                        type="textarea"
+                        name="address"
+                        id="userAddress"
+                        placeholder="Enter your Address"
+                        onChange={this.onChange}
+                        value={this.state.address}
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <Label for="userRole">Role</Label>
                       <Input
                         type="select"
-                        name="product_id"
-                        id="product"
-                        placeholder="Select the Product"
+                        name="role_id"
+                        id="userRole"
                         onChange={this.onChange}
-                        value={this.state.product_id}
+                        value={this.state.role_id}
                       >
-                        <option>Select Product</option>
-                        {this.displayProducts()}
+                        <option>Select Role</option>
+                        {this.displayRoles()}
                       </Input>
                     </FormGroup>
                     <Button
@@ -194,7 +220,7 @@ class AddBundleProduct extends Component {
                         borderColor: "#1ABC9C",
                       }}
                     >
-                      <b>Add New Bundle-Product</b>
+                      <b>Add New User</b>
                     </Button>
                     &nbsp; &nbsp;
                     <Button
@@ -205,7 +231,7 @@ class AddBundleProduct extends Component {
                         borderColor: "#BC1A4B",
                       }}
                     >
-                      <b>List all Bundle-Products</b>
+                      <b>List all Users</b>
                     </Button>
                   </Form>
                 </CardBody>
@@ -222,32 +248,30 @@ class AddBundleProduct extends Component {
     return (
       <div>
         <Header />
-        {addBundleProductForm}
+        {addUserForm}
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ bundleProduct, bundle, product }) => {
+const mapStateToProps = ({ user, role }) => {
   return {
-    error: bundleProduct.error,
-    loading: bundleProduct.loading,
-    addBundleProduct: bundleProduct.addBundleProduct,
-    bundleList: bundle.bundleList,
-    productList: product.productList,
+    error: user.error,
+    loading: user.loading,
+    addUser: user.addUser,
+    roleList: role.roleList,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getBundles: () => dispatch(getBundles()),
-    getProducts: () => dispatch(getProducts()),
-    addBundleProduct: (bundle_id, product_id) =>
-      dispatch(addBundleProduct(bundle_id, product_id)),
+    getRoles: () => dispatch(getRoles()),
+    addUser: (name, email, address, password, role_id) =>
+      dispatch(addUser(name, email, address, password, role_id)),
   };
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(AddBundleProduct));
+)(withRouter(AddUser));

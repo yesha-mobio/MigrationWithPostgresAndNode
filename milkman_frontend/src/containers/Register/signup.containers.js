@@ -1,7 +1,4 @@
 import React, { Component } from "react";
-import { graphql } from "react-apollo";
-import Header from "../../components/Core/header";
-import { flowRight as compose } from "lodash";
 import {
   Card,
   CardHeader,
@@ -15,10 +12,12 @@ import {
   Row,
   Col,
 } from "reactstrap";
+import { Link, withRouter } from "react-router-dom";
+import { connect } from "react-redux";
 
-import { createUser } from "../../queries/user";
-import { getAllRoles } from "../../queries/role";
-import { Link } from "react-router-dom";
+import Header from "../../components/Core/header";
+import { registerUser } from "../../redux/actions/Auth-Action/authAction";
+import { getRoles } from "../../redux/actions/Role-Action/roleAction";
 
 class Signup extends Component {
   constructor(props) {
@@ -39,23 +38,26 @@ class Signup extends Component {
     this.displayRoles = this.displayRoles.bind(this);
   }
 
+  componentDidMount() {
+    const { getRoles } = this.props;
+    getRoles();
+  }
+
   onChange = (event) => {
     const { name, value } = event.target;
     this.setState({ [name]: value });
   };
 
-  onSubmit = (event) => {
+  onSubmit = async (event) => {
     event.preventDefault();
-    this.props
-      .createUser({
-        variables: {
-          name: this.state.name,
-          email: this.state.email,
-          address: this.state.address,
-          password: this.state.password,
-          role_id: this.state.role_id,
-        },
-      })
+    await this.props
+      .registerUser(
+        this.state.name,
+        this.state.email,
+        this.state.address,
+        this.state.password,
+        this.state.role_id
+      )
       .then(() => {
         this.setState({
           error: false,
@@ -79,13 +81,12 @@ class Signup extends Component {
       });
   };
 
-  displayRoles() {
-    var data = this.props.getAllRoles;
-    // console.log(this.props.data);
-    if (data.loading) {
-      return "loading...!!";
+  displayRoles = () => {
+    var { roleLoading, roleList } = this.props;
+    if (roleLoading) {
+      return;
     } else {
-      return data.getAllRoles.map((role) => {
+      return roleList.map((role) => {
         return (
           <option key={role.id} value={role.id}>
             {role.name}
@@ -93,9 +94,45 @@ class Signup extends Component {
         );
       });
     }
-  }
+  };
 
   render() {
+    const successMessage = () => {
+      return (
+        <div className="row">
+          <div className="col-md-6 offset-sm-3 text-left">
+            <div
+              className="alert alert-success"
+              style={{
+                display: this.state.success ? "" : "none",
+                marginTop: "10px",
+              }}
+            >
+              You are Registered...!!
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const errorMessage = () => {
+      return (
+        <div className="row">
+          <div className="col-md-6 offset-sm-3 text-left">
+            <div
+              className="alert alert-danger"
+              style={{
+                display: this.state.error ? "" : "none",
+                marginTop: "10px",
+              }}
+            >
+              {this.state.errorMessage}
+            </div>
+          </div>
+        </div>
+      );
+    };
+
     const signupForm = () => {
       return (
         <Container>
@@ -194,42 +231,6 @@ class Signup extends Component {
       );
     };
 
-    const successMessage = () => {
-      return (
-        <div className="row">
-          <div className="col-md-6 offset-sm-3 text-left">
-            <div
-              className="alert alert-success"
-              style={{
-                display: this.state.success ? "" : "none",
-                marginTop: "10px",
-              }}
-            >
-              You are Registered...!!
-            </div>
-          </div>
-        </div>
-      );
-    };
-
-    const errorMessage = () => {
-      return (
-        <div className="row">
-          <div className="col-md-6 offset-sm-3 text-left">
-            <div
-              className="alert alert-danger"
-              style={{
-                display: this.state.error ? "" : "none",
-                marginTop: "10px",
-              }}
-            >
-              {this.state.errorMessage}
-            </div>
-          </div>
-        </div>
-      );
-    };
-
     return (
       <div>
         <Header />
@@ -239,7 +240,23 @@ class Signup extends Component {
   }
 }
 
-export default compose(
-  graphql(getAllRoles, { name: "getAllRoles" }),
-  graphql(createUser, { name: "createUser" })
-)(Signup);
+const mapStateToProps = ({ auth, role }) => {
+  return {
+    authError: auth.error,
+    authLoading: auth.loading,
+    userDetails: auth.userDetails,
+    roleError: role.error,
+    roleLoading: role.loading,
+    roleList: role.roleList,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getRoles: () => dispatch(getRoles()),
+    registerUser: (name, email, address, password, role_id) =>
+      dispatch(registerUser(name, email, address, password, role_id)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Signup));

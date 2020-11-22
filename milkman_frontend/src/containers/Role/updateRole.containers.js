@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import {
   Card,
   CardHeader,
@@ -12,27 +14,27 @@ import {
   Row,
   Col,
 } from "reactstrap";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
 
 import Header from "../../components/Core/header";
-import { addProduct } from "../../redux/actions/Product-Action/productAction";
+import { updateSingleRole } from "../../redux/actions/Role-Action/roleAction";
 import { isAuthenticated } from "../../authentication/authentication";
 
-class AddProduct extends Component {
+class UpdateRole extends Component {
   constructor(props) {
-    super();
+    super(props);
+    const { editRole, history } = props;
+    if (!editRole) {
+      history.push("/displayRoles");
+    }
     this.state = {
-      name: "",
-      description: "",
-      price: 0,
+      ...editRole,
       error: "",
       success: false,
       errorMessage: "",
     };
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-    this.goBackBowser = this.goBackBowser.bind(this);
+    this.displayRoleHandler = this.displayRoleHandler.bind(this);
   }
 
   onChange = (event) => {
@@ -42,18 +44,15 @@ class AddProduct extends Component {
 
   onSubmit = async (event) => {
     event.preventDefault();
-    const Price = parseFloat(this.state.price);
     await this.props
-      .addProduct(this.state.name, this.state.description, Price)
+      .updateSingleRole(this.state)
       .then(() => {
         this.setState({
           error: false,
           success: true,
-          name: "",
-          description: "",
-          price: 0,
           errorMessage: "",
         });
+        this.props.history.push("/displayRoles");
       })
       .catch((err) => {
         if (err) {
@@ -66,8 +65,8 @@ class AddProduct extends Component {
       });
   };
 
-  goBackBowser = () => {
-    this.props.history.push("/displayProducts");
+  displayRoleHandler = () => {
+    this.props.history.push("/displayRoles");
   };
 
   render() {
@@ -82,7 +81,7 @@ class AddProduct extends Component {
                 marginTop: "10px",
               }}
             >
-              Product is added...!
+              Role is updated...!
             </div>
           </div>
         </div>
@@ -107,7 +106,7 @@ class AddProduct extends Component {
       );
     };
 
-    const addProductForm =
+    const updateRoleForm =
       isAuthenticated() && isAuthenticated().user.role_id === 1 ? (
         <Container>
           <Row>
@@ -120,43 +119,31 @@ class AddProduct extends Component {
                     background: "#1ABC9C",
                   }}
                 >
-                  <h5>Add a new Product</h5>
+                  <h5>Update Role</h5>
                 </CardHeader>
                 {successMessage()}
                 {errorMessage()}
                 <CardBody>
                   <Form onSubmit={this.onSubmit}>
                     <FormGroup>
-                      <Label for="productName">Name</Label>
+                      <Label for="roleId">Role-ID</Label>
+                      <Input
+                        type="text"
+                        name="id"
+                        id="roleId"
+                        value={this.state.id}
+                        readOnly
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <Label for="roleName">Name</Label>
                       <Input
                         type="text"
                         name="name"
-                        id="productName"
-                        placeholder="Enter the name of the Product"
+                        id="roleName"
+                        placeholder="Enter the name of the Role"
                         onChange={this.onChange}
                         value={this.state.name}
-                      />
-                    </FormGroup>
-                    <FormGroup>
-                      <Label for="productDescription">Description</Label>
-                      <Input
-                        type="text"
-                        name="description"
-                        id="productDescription"
-                        placeholder="Enter the Description"
-                        onChange={this.onChange}
-                        value={this.state.description}
-                      />
-                    </FormGroup>
-                    <FormGroup>
-                      <Label for="productPrice">Price</Label>
-                      <Input
-                        type="text"
-                        name="price"
-                        id="productPrice"
-                        placeholder="Enter the Price"
-                        onChange={this.onChange}
-                        value={this.state.price}
                       />
                     </FormGroup>
                     <Button
@@ -166,18 +153,18 @@ class AddProduct extends Component {
                         borderColor: "#1ABC9C",
                       }}
                     >
-                      <b>Add New Product</b>
+                      <b>Update Role</b>
                     </Button>
                     &nbsp; &nbsp;
                     <Button
-                      onClick={this.goBackBowser}
+                      onClick={this.displayRoleHandler}
                       style={{
                         background: "#BC1A4B",
                         color: "#1ABC9C",
                         borderColor: "#BC1A4B",
                       }}
                     >
-                      <b>List all Products</b>
+                      <b>Cancel</b>
                     </Button>
                   </Form>
                 </CardBody>
@@ -194,28 +181,27 @@ class AddProduct extends Component {
     return (
       <div>
         <Header />
-        {addProductForm}
+        {updateRoleForm}
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ product }) => {
+const mapStateToProps = ({ role }) => {
   return {
-    error: product.error,
-    loading: product.loading,
-    addProduct: product.addProduct,
+    error: role.error,
+    loading: role.loading,
+    editRole: role.editRole,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addProduct: (name, description, price) =>
-      dispatch(addProduct(name, description, price)),
+    updateSingleRole: (roleData) => dispatch(updateSingleRole(roleData)),
   };
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(AddProduct));
+)(withRouter(UpdateRole));

@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { graphql } from "react-apollo";
 import {
   Table,
   Container,
@@ -10,35 +9,57 @@ import {
   CardBody,
   Button,
 } from "reactstrap";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 
 import Header from "../Core/header";
 import RoleTableRow from "./roleTableRow.components";
-import { getAllRoles } from "../../queries/role";
-import { withRouter } from "react-router-dom";
+import { getRoles } from "../../redux/actions/Role-Action/roleAction";
 import { isAuthenticated } from "../../authentication/authentication";
+import Spinner from "../UI/Spinner/Spinner";
 
 class DisplayRole extends Component {
   constructor(props) {
     super();
     this.goBackBowser = this.goBackBowser.bind(this);
-    this.displayRolesHandler = this.displayRolesHandler.bind(this);
   }
 
-  goBackBowser() {
-    this.props.history.push("/role");
-  }
-
-  displayRolesHandler() {
-    var data = this.props.data;
-
-    if (!data.loading) {
-      return data.getAllRoles.map((role, i) => {
-        return <RoleTableRow key={i} obj={role} />;
-      });
+  componentDidMount() {
+    const { getRoles } = this.props;
+    if (isAuthenticated() && isAuthenticated().user.role_id === 1) {
+      return getRoles();
     }
   }
 
+  goBackBowser = () => {
+    this.props.history.push("/role");
+  };
+
   render() {
+    const displayRolesHandler = () => {
+      const { error, loading, roleList } = this.props;
+      if (error) {
+        return (
+          <tr>
+            <td>{error}</td>
+          </tr>
+        );
+      }
+      if (loading) {
+        return (
+          <tr>
+            <td colSpan="3">
+              <Spinner />
+            </td>
+          </tr>
+        );
+      } else {
+        return roleList.map((role, i) => {
+          return <RoleTableRow key={i} obj={role} />;
+        });
+      }
+    };
+
     const displayRoles =
       isAuthenticated() && isAuthenticated().user.role_id === 1 ? (
         <Container>
@@ -63,7 +84,7 @@ class DisplayRole extends Component {
                         <th colSpan="3">Actions</th>
                       </tr>
                     </thead>
-                    <tbody>{this.displayRolesHandler()}</tbody>
+                    <tbody>{displayRolesHandler()}</tbody>
                   </Table>
                   <Button
                     onClick={this.goBackBowser}
@@ -94,4 +115,21 @@ class DisplayRole extends Component {
   }
 }
 
-export default withRouter(graphql(getAllRoles)(DisplayRole));
+const mapStateToProps = ({ role }) => {
+  return {
+    error: role.error,
+    loading: role.loading,
+    roleList: role.roleList,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getRoles: () => dispatch(getRoles()),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(DisplayRole));

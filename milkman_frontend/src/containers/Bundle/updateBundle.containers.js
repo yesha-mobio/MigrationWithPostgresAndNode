@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import {
   Card,
   CardHeader,
@@ -12,27 +13,29 @@ import {
   Row,
   Col,
 } from "reactstrap";
-import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 
 import Header from "../../components/Core/header";
-import { addProduct } from "../../redux/actions/Product-Action/productAction";
+import { updateSingleBundle } from "../../redux/actions/Bundle-Action/bundleAction";
 import { isAuthenticated } from "../../authentication/authentication";
 
-class AddProduct extends Component {
+class UpdateBundle extends Component {
   constructor(props) {
-    super();
+    super(props);
+    const { editBundle, history } = props;
+    if (!editBundle) {
+      history.push("/displayBundles");
+    }
     this.state = {
-      name: "",
-      description: "",
-      price: 0,
+      ...editBundle,
       error: "",
       success: false,
       errorMessage: "",
     };
+
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-    this.goBackBowser = this.goBackBowser.bind(this);
+    this.displayBundleHandler = this.displayBundleHandler.bind(this);
   }
 
   onChange = (event) => {
@@ -42,18 +45,15 @@ class AddProduct extends Component {
 
   onSubmit = async (event) => {
     event.preventDefault();
-    const Price = parseFloat(this.state.price);
     await this.props
-      .addProduct(this.state.name, this.state.description, Price)
+      .updateSingleBundle(this.state)
       .then(() => {
         this.setState({
           error: false,
           success: true,
-          name: "",
-          description: "",
-          price: 0,
           errorMessage: "",
         });
+        this.props.history.push("/displayBundles");
       })
       .catch((err) => {
         if (err) {
@@ -66,8 +66,8 @@ class AddProduct extends Component {
       });
   };
 
-  goBackBowser = () => {
-    this.props.history.push("/displayProducts");
+  displayBundleHandler = () => {
+    this.props.history.push("/displayBundles");
   };
 
   render() {
@@ -82,7 +82,7 @@ class AddProduct extends Component {
                 marginTop: "10px",
               }}
             >
-              Product is added...!
+              Bundle is updated...!
             </div>
           </div>
         </div>
@@ -107,7 +107,7 @@ class AddProduct extends Component {
       );
     };
 
-    const addProductForm =
+    const updateBundleForm =
       isAuthenticated() && isAuthenticated().user.role_id === 1 ? (
         <Container>
           <Row>
@@ -120,43 +120,42 @@ class AddProduct extends Component {
                     background: "#1ABC9C",
                   }}
                 >
-                  <h5>Add a new Product</h5>
+                  <h5>Update Bundle</h5>
                 </CardHeader>
                 {successMessage()}
                 {errorMessage()}
                 <CardBody>
                   <Form onSubmit={this.onSubmit}>
                     <FormGroup>
-                      <Label for="productName">Name</Label>
+                      <Label for="bundleId">Bundle-ID</Label>
+                      <Input
+                        type="text"
+                        name="id"
+                        id="bundleId"
+                        value={this.state.id}
+                        readOnly
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <Label for="bundleName">Name</Label>
                       <Input
                         type="text"
                         name="name"
-                        id="productName"
-                        placeholder="Enter the name of the Product"
+                        id="bundleName"
+                        placeholder="Enter the name of the Bundle"
                         onChange={this.onChange}
                         value={this.state.name}
                       />
                     </FormGroup>
                     <FormGroup>
-                      <Label for="productDescription">Description</Label>
+                      <Label for="bundleDescription">Description</Label>
                       <Input
                         type="text"
                         name="description"
-                        id="productDescription"
+                        id="bundleDescription"
                         placeholder="Enter the Description"
                         onChange={this.onChange}
                         value={this.state.description}
-                      />
-                    </FormGroup>
-                    <FormGroup>
-                      <Label for="productPrice">Price</Label>
-                      <Input
-                        type="text"
-                        name="price"
-                        id="productPrice"
-                        placeholder="Enter the Price"
-                        onChange={this.onChange}
-                        value={this.state.price}
                       />
                     </FormGroup>
                     <Button
@@ -166,18 +165,18 @@ class AddProduct extends Component {
                         borderColor: "#1ABC9C",
                       }}
                     >
-                      <b>Add New Product</b>
+                      <b>Update Bundle</b>
                     </Button>
                     &nbsp; &nbsp;
                     <Button
-                      onClick={this.goBackBowser}
+                      onClick={this.displayBundleHandler}
                       style={{
                         background: "#BC1A4B",
                         color: "#1ABC9C",
                         borderColor: "#BC1A4B",
                       }}
                     >
-                      <b>List all Products</b>
+                      <b>Cancel</b>
                     </Button>
                   </Form>
                 </CardBody>
@@ -194,28 +193,28 @@ class AddProduct extends Component {
     return (
       <div>
         <Header />
-        {addProductForm}
+        {updateBundleForm}
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ product }) => {
+const mapStateToProps = ({ bundle }) => {
   return {
-    error: product.error,
-    loading: product.loading,
-    addProduct: product.addProduct,
+    error: bundle.error,
+    loading: bundle.loading,
+    editBundle: bundle.editBundle,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addProduct: (name, description, price) =>
-      dispatch(addProduct(name, description, price)),
+    updateSingleBundle: (bundleData) =>
+      dispatch(updateSingleBundle(bundleData)),
   };
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(AddProduct));
+)(withRouter(UpdateBundle));

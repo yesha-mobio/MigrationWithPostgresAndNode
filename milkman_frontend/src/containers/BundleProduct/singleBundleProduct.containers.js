@@ -16,60 +16,30 @@ import {
 import { connect } from "react-redux";
 
 import Header from "../../components/Core/header";
-import {
-  viewBundle,
-  editBundle,
-} from "../../redux/actions/Bundle-Action/bundleAction";
+import { viewBundleProduct } from "../../redux/actions/BundleProduct-Action/bundleProductAction";
 import Spinner from "../../components/UI/Spinner/Spinner";
+import { isAuthenticated } from "../../authentication/authentication";
 
-class EditBundle extends Component {
+class SingleBundleProduct extends Component {
   constructor(props) {
     super();
-    this.state = {
-      name: "",
-      description: "",
-      error: "",
-      success: false,
-      errorMessage: "",
-    };
-
-    this.onChange = this.onChange.bind(this);
-    // this.onSubmit = this.onSubmit.bind(this);
   }
-
-  onChange = (event) => {
-    const { name, value } = event.target;
-    this.setState({ [name]: value });
-  };
 
   componentDidMount() {
-    const { singleBundle } = this.props;
-    console.log("CONSTUCTOR IN EDIT BUNDLE", singleBundle);
-    const {
-      viewBundle,
-      editBundle,
-      match: {
-        params: { bundle_id },
-      },
-    } = this.props;
-    viewBundle(bundle_id);
-    editBundle(bundle_id, this.state.name, this.state.description);
+    if (isAuthenticated() && isAuthenticated().user.role_id === 1) {
+      const {
+        viewBundleProduct,
+        match: {
+          params: { bundle_product_id },
+        },
+      } = this.props;
+      viewBundleProduct(bundle_product_id);
+    }
   }
 
-  // shouldComponentUpdate() {
-  //   const {
-  //     editBundle,
-  //     match: {
-  //       params: { bundle_id },
-  //     },
-  //   } = this.props;
-  //   editBundle(bundle_id);
-  // }
-
   render() {
-    console.log(this.props);
-    const { updateBundle } = this.props;
-    const updateBundleForm = updateBundle ? (
+    const { singleBundleProduct } = this.props;
+    const singleBundleProductForm = singleBundleProduct ? (
       <Container>
         <Row>
           <Col sm="12">
@@ -81,42 +51,41 @@ class EditBundle extends Component {
                   background: "#1ABC9C",
                 }}
               >
-                <h5>Edit Bundle</h5>
+                <h5>Single Bundle-Product</h5>
               </CardHeader>
               <CardBody>
-                {/* <Spinner /> */}
                 <Form>
                   <FormGroup>
-                    <Label for="bundleName">Name</Label>
+                    <Label for="bundleName">Bundle</Label>
                     <Input
                       type="text"
-                      name="name"
+                      name="bundle_name"
                       id="bundleName"
-                      placeholder="Enter the name of the Bundle"
-                      onChange={this.onChange}
-                      value={this.state.name}
+                      value={singleBundleProduct.bundles.name}
+                      readOnly
                     />
                   </FormGroup>
                   <FormGroup>
-                    <Label for="bundleDescription">Description</Label>
+                    <Label for="productName">Product</Label>
                     <Input
                       type="text"
-                      name="description"
-                      id="bundleDescription"
-                      placeholder="Enter the Description"
-                      onChange={this.onChange}
-                      value={this.state.description}
+                      name="product_name"
+                      id="productName"
+                      value={singleBundleProduct.products.name}
+                      readOnly
                     />
                   </FormGroup>
                   <Button
-                    onClick={() => this.props.history.push("/displayBundles")}
+                    onClick={() =>
+                      this.props.history.push("/displayBundleProducts")
+                    }
                     style={{
                       background: "#BC1A4B",
                       color: "#1ABC9C",
                       borderColor: "#BC1A4B",
                     }}
                   >
-                    <b>List all Bundles</b>
+                    <b>List all Bundle-Products</b>
                   </Button>
                 </Form>
               </CardBody>
@@ -136,7 +105,7 @@ class EditBundle extends Component {
                   background: "#1ABC9C",
                 }}
               >
-                <h5>Edit Bundle</h5>
+                <h5>Single Bundle-Product</h5>
               </CardHeader>
               <CardBody>
                 <h3 style={{ color: "red", textAlign: "center" }}>
@@ -148,33 +117,38 @@ class EditBundle extends Component {
         </Row>
       </Container>
     );
+
     return (
       <div>
         <Header />
-        {updateBundleForm}
+        {isAuthenticated() && isAuthenticated().user.role_id === 1 ? (
+          singleBundleProductForm
+        ) : (
+          <h1 style={{ textAlign: "center", marginTop: "50px", color: "red" }}>
+            You are not Authenticated...!!
+          </h1>
+        )}
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ bundle }) => {
+const mapStateToProps = ({ bundleProduct }) => {
   return {
-    error: bundle.error,
-    loading: bundle.loading,
-    singleBundle: bundle.singleBundle,
-    updateBundle: bundle.updateBundle,
+    error: bundleProduct.error,
+    loading: bundleProduct.loading,
+    singleBundleProduct: bundleProduct.singleBundleProduct,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    viewBundle: (bundleId) => dispatch(viewBundle(bundleId)),
-    editBundle: (bundleId, name, description) =>
-      dispatch(editBundle(bundleId, name, description)),
+    viewBundleProduct: (bundleProductId) =>
+      dispatch(viewBundleProduct(bundleProductId)),
   };
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(EditBundle));
+)(withRouter(SingleBundleProduct));

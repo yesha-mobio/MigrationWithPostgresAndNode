@@ -46,7 +46,7 @@ const deleteProduct = gql`
 
 const updateProduct = gql`
   mutation($id: ID!, $name: String!, $description: String!, $price: Float!) {
-    updateBundle(
+    updateProduct(
       id: $id
       name: $name
       description: $description

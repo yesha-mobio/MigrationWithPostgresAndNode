@@ -4,7 +4,8 @@ import {
   isAuthenticated,
   signout,
 } from "../../../authentication/authentication";
-import { register, signin } from "../../../queries/auth";
+import { signin } from "../../../queries/auth";
+import { createUser } from "../../../queries/user";
 import {
   LOGIN_USER_START,
   LOGIN_USER_FAIL,
@@ -70,14 +71,14 @@ export const registerUser = (name, email, address, password, role_id) => {
     dispatch(registerUserStart);
 
     const { data } = await client.mutate({
-      mutation: register,
+      mutation: createUser,
       variables: { name, email, address, password, role_id },
     });
 
     if (data.error) {
       dispatch(registerUserFail);
     } else {
-      dispatch(registerUserSuccess(data.register));
+      dispatch(registerUserSuccess(data.createUser));
     }
   };
 };

@@ -2,5 +2,57 @@
 2. Validation --> Done
 3. isAdmin middleware  --> Done
 4. View Data --> Done
-5. Update Data
+5. Update Data --> Done
 6. Image Uploading
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Work with Redux
+-----------------------
+1. Register --> Done
+2. Login --> Done
+3. Logout --> Done
+4. Role
+Authentication --> Done
+{Add Role, Display Role, View Role, Delete Role} --> Done
+5. Bundle
+Authentication --> Done
+{Add Bundle, Display Bundle, View Role, Delete Role} --> Done
+6. Product
+Authentication --> Done
+{Add Product, Display Product, View Product, Delete Product} --> Done
+7. User
+Authentication --> Done
+{Add User, Display User, View User, Delete User} --> Done
+8. BundleProduct
+Authentication --> Done
+{Add BundleProduct, Display BundleProduct, View BundleProduct, Delete BundleProduct} --> Done
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Errors to Solve
+--------------------
+1. Refresh Data List after Delete --> Done
+2. After some users Grahql gives an error for creating new User (Try to solve with adding new resolver) --> Done but still getting Issue
+3. Price is not update in Product_Table due to some error
+4. Refresh Data List after Edit Bundle-Product --> Done
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Update data with Redux
+---------------------------------
+1. Role
+Authentication --> Done
+{Update Role} --> Done
+2. Bundle
+Authentication --> Done
+{Update Bundle} --> Done
+3. Product
+Authentication --> Done
+{Update Product} --> Done
+4. User
+Authentication --> Done
+{Update User} --> Done
+5. BundleProduct
+Authentication --> Done
+{Update BundleProduct} --> Done
