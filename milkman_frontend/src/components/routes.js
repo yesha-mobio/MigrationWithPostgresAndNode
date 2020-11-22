@@ -26,6 +26,7 @@ import AddBundleProduct from "../containers/BundleProduct/addBundleProduct.conta
 import DisplayBundleProduct from "./BundleProduct/displayBundleProduct.components";
 import Users from "./User/users.components";
 import SingleUser from "../containers/User/singleUser.containers";
+import EditUser from "../containers/User/updateUser.containers";
 import AddUser from "../containers/User/addUser.containers";
 import DisplayUser from "./User/displayUser.components";
 import AdminDashboard from "./User/Admin/adminDashboard.components";
@@ -73,6 +74,7 @@ const Routes = () => {
           <Route path="/addUser" component={AddUser} />
           <Route path="/displayUsers" component={DisplayUser} />
           <Route path="/singleUser/:user_id" component={SingleUser} />
+          <Route path="/editUser/:user_id" component={EditUser} />
           {/* Auth Routes */}
           <Route path="/signin" component={Signin} />
           <Route path="/signup" component={Signup} />

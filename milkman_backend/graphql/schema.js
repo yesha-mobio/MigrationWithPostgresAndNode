@@ -93,7 +93,13 @@ const typeDefs = gql`
       role_id: ID!
     ): RegisterResponse!
     deleteUser(id: ID!): User
-    updateUser(name: String!, email: String!, address: String!, id: ID!): User
+    updateUser(
+      name: String!
+      email: String!
+      address: String!
+      role_id: ID!
+      id: ID!
+    ): User
 
     createBundle(name: String!, description: String!): Bundle
     deleteBundle(id: ID!): Bundle

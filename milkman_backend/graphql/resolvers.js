@@ -251,15 +251,51 @@ module.exports = {
         throw new Error(err);
       }
     },
-    updateUser: async (root, { name, email, address, id }, { models }) => {
+    updateUser: async (
+      root,
+      { name, email, address, role_id, id },
+      { models }
+    ) => {
       try {
+        if (id === "" || id === undefined) {
+          throw new Error("ID is Required...!!");
+        }
+
+        if (name === "" || name === undefined) {
+          throw new Error("Please Enter your Name...!!");
+        }
+
+        if (email === "" || email === undefined) {
+          throw new Error("Please Enter your Email...!!");
+        }
+
+        if (address === "" || address === undefined) {
+          throw new Error("Please Enter your Address...!!");
+        }
+
+        if (role_id === "" || role_id === undefined) {
+          throw new Error("Please Select your Role...!!");
+        }
+
+        let user = await models.tbl_user.findByPk(id);
+        if (!user) {
+          throw new Error("User is not exist.");
+        }
+
         await models.tbl_user.update(
-          { name, email, address },
+          {
+            name: name || user.name,
+            email: email || user.email,
+            address: address || user.address,
+            role_id: role_id || user.role_id,
+          },
           { where: { id } }
         );
+
         const updatedUser = await models.tbl_user.findByPk(id, {
           include: [{ model: models.tbl_role, as: "roles" }],
         });
+
         return updatedUser;
       } catch (err) {
         throw new Error(err);

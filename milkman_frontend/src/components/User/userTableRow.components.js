@@ -4,10 +4,13 @@ import confirm from "reactstrap-confirm";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { removeUser } from "../../redux/actions/User-Action/userAction";
+import {
+  removeUser,
+  setSelectedUser,
+} from "../../redux/actions/User-Action/userAction";
 
 const UserTableRow = (props) => {
-  const { removeUser } = props;
+  const { removeUser, setSelectedUser } = props;
   return (
     <Fragment>
       <tr>
@@ -18,7 +21,13 @@ const UserTableRow = (props) => {
         <td>{props.obj.role_id}</td>
         <td>{props.obj.roles.name}</td>
         <td>
-          <Button color="info" onClick={() => props.history.push("/")}>
+          <Button
+            color="info"
+            onClick={() => {
+              setSelectedUser(props.obj);
+              props.history.push("/editUser/" + props.obj.id);
+            }}
+          >
             Edit
           </Button>
           &nbsp;&nbsp;
@@ -57,6 +66,7 @@ const UserTableRow = (props) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     removeUser: (userId) => dispatch(removeUser(userId)),
+    setSelectedUser: (selectedUser) => dispatch(setSelectedUser(selectedUser)),
   };
 };
 

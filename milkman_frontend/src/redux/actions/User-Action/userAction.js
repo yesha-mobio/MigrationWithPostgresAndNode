@@ -4,6 +4,7 @@ import {
   getAllUsers,
   getUserById,
   deleteUser,
+  updateUser,
 } from "../../../queries/user";
 import {
   ADD_USER_START,
@@ -18,6 +19,10 @@ import {
   DELETE_USER_START,
   DELETE_USER_FAIL,
   DELETE_USER_SUCCESS,
+  EDIT_USER_START,
+  EDIT_USER_FAIL,
+  EDIT_USER_SUCCESS,
+  SELECTED_USER,
 } from "./actionType";
 
 const addUserStart = {
@@ -140,5 +145,41 @@ export const removeUser = (userId) => {
     } else {
       dispatch(deleteUserSuccess(userId));
     }
+  };
+};
+
+const editUserStart = {
+  type: EDIT_USER_START,
+};
+
+const editUserFail = {
+  type: EDIT_USER_FAIL,
+};
+
+const editUserSuccess = (editUser) => {
+  return { type: EDIT_USER_SUCCESS, editUser };
+};
+
+export const updateSingleUser = ({ id, name, email, address, role_id }) => {
+  return async (dispatch) => {
+    dispatch(editUserStart);
+
+    const { data } = await client.mutate({
+      mutation: updateUser,
+      variables: { id, name, email, address, role_id },
+      refetchQueries: [{ query: getAllUsers }],
+    });
+
+    if (data.error) {
+      dispatch(editUserFail);
+    } else {
+      dispatch(editUserSuccess(data.updateUser));
+    }
+  };
+};
+
+export const setSelectedUser = (selectedUser) => {
+  return async (dispatch) => {
+    dispatch({ type: SELECTED_USER, selectedUser });
   };
 };

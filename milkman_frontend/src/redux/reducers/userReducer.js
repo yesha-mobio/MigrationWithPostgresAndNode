@@ -11,6 +11,10 @@ import {
   DELETE_USER_START,
   DELETE_USER_FAIL,
   DELETE_USER_SUCCESS,
+  EDIT_USER_START,
+  EDIT_USER_FAIL,
+  EDIT_USER_SUCCESS,
+  SELECTED_USER,
 } from "../actions/User-Action/actionType";
 
 const initialState = {
@@ -19,7 +23,7 @@ const initialState = {
   addUser: null,
   userList: [],
   singleUser: null,
-  //   updateUser: null,
+  editUser: null,
 };
 
 const UserReducer = (state = initialState, action) => {
@@ -103,6 +107,30 @@ const UserReducer = (state = initialState, action) => {
             return id !== action.userId;
           }),
         ],
+      };
+    case EDIT_USER_START:
+      return {
+        ...state,
+        error: false,
+        loading: true,
+      };
+    case EDIT_USER_FAIL:
+      return {
+        ...state,
+        error: true,
+        loading: false,
+      };
+    case EDIT_USER_SUCCESS:
+      return {
+        ...state,
+        error: false,
+        loading: false,
+        editUser: action.selectedUser,
+      };
+    case SELECTED_USER:
+      return {
+        ...state,
+        editUser: action.selectedUser,
       };
     default:
       return state;
