@@ -45,8 +45,13 @@ class UpdateProduct extends Component {
 
   onSubmit = async (event) => {
     event.preventDefault();
+    const productPrice = parseFloat(this.state.price);
+    const productObject = {
+      ...this.state,
+      price: productPrice,
+    };
     await this.props
-      .updateSingleProduct(this.state)
+      .updateSingleProduct(productObject)
       .then(() => {
         this.setState({
           error: false,

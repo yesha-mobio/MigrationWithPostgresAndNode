@@ -440,7 +440,7 @@ module.exports = {
           throw new Error("Please Enter Description...!!");
         }
 
-        if (price === "" || price === undefined) {
+        if (price === 0) {
           throw new Error("Please Enter Price...!!");
         }
 

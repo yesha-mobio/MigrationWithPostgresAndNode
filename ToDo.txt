@@ -34,7 +34,7 @@ Errors to Solve
 --------------------
 1. Refresh Data List after Delete --> Done
 2. After some users Grahql gives an error for creating new User (Try to solve with adding new resolver) --> Done but still getting Issue
-3. Price is not update in Product_Table due to some error
+3. Price is not update in Product_Table due to some error --> Done
 4. Refresh Data List after Edit Bundle-Product --> Done
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
