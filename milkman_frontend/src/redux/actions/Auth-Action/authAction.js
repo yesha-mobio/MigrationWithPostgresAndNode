@@ -1,10 +1,10 @@
-import client from "../../../apollo-client/client";
+import client from "../../../Apollo-Client/client";
 import {
   authenticate,
   isAuthenticated,
   signout,
-} from "../../../authentication/authentication";
-import { register, signin } from "../../../queries/auth";
+} from "../../../Authentication/authentication";
+import { register, signin } from "../../../Queries/auth";
 import {
   LOGIN_USER_START,
   LOGIN_USER_FAIL,

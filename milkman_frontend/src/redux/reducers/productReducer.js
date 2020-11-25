@@ -15,7 +15,7 @@ import {
   EDIT_PRODUCT_FAIL,
   EDIT_PRODUCT_SUCCESS,
   SELECTED_PRODUCT,
-} from "../actions/Product-Action/actionType";
+} from "../Actions/Product-Action/actionType";
 
 const initialState = {
   error: false,

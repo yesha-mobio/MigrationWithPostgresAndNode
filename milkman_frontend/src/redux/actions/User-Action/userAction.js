@@ -1,11 +1,11 @@
-import client from "../../../apollo-client/client";
+import client from "../../../Apollo-Client/client";
 import {
   createUser,
   getAllUsers,
   getUserById,
   deleteUser,
   updateUser,
-} from "../../../queries/user";
+} from "../../../Queries/user";
 import {
   ADD_USER_START,
   ADD_USER_FAIL,

@@ -1,11 +1,11 @@
-import client from "../../../apollo-client/client";
+import client from "../../../Apollo-Client/client";
 import {
   createRole,
   deleteRole,
   getAllRoles,
   getRoleById,
   updateRole,
-} from "../../../queries/role";
+} from "../../../Queries/role";
 import {
   ADD_ROLE_START,
   ADD_ROLE_FAIL,

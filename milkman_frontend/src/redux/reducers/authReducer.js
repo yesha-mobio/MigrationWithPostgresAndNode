@@ -8,7 +8,7 @@ import {
   LOGOUT_USER_START,
   LOGOUT_USER_FAIL,
   LOGOUT_USER_SUCCESS,
-} from "../actions/Auth-Action/actionType";
+} from "../Actions/Auth-Action/actionType";
 
 const initialState = {
   error: false,
