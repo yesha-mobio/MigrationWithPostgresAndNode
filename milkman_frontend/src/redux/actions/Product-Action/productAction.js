@@ -1,11 +1,11 @@
-import client from "../../../apollo-client/client";
+import client from "../../../Apollo-Client/client";
 import {
   createProduct,
   deleteProduct,
   getAllProducts,
   getProductById,
   updateProduct,
-} from "../../../queries/product";
+} from "../../../Queries/product";
 import {
   ADD_PRODUCT_START,
   ADD_PRODUCT_FAIL,
