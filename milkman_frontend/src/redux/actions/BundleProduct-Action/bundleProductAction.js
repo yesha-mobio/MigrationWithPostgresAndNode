@@ -1,4 +1,4 @@
-import client from "../../..Aapollo-Client/client";
+import client from "../../../Apollo-Client/client";
 import {
   createBundleProduct,
   getAllBundleProducts,
