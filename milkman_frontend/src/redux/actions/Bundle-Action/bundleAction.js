@@ -1,11 +1,11 @@
-import client from "../../../apollo-client/client";
+import client from "../../../Apollo-Client/client";
 import {
   createBundle,
   getAllBundles,
   getBundleById,
   deleteBundle,
   updateBundle,
-} from "../../../queries/bundle";
+} from "../../../Queries/bundle";
 import {
   ADD_BUNDLE_START,
   ADD_BUNDLE_FAIL,

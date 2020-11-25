@@ -2,12 +2,12 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import App from "./components/App";
+import App from "./Components/App";
 import { ApolloProvider } from "react-apollo";
 import { Provider } from "react-redux";
 
-import client from "./apollo-client/client";
-import store from "./redux/store";
+import client from "./Apollo-Client/client";
+import store from "./Redux/store";
 
 ReactDOM.render(
   // <React.StrictMode>

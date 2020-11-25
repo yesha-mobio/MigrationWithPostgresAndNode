@@ -15,7 +15,7 @@ import {
   EDIT_USER_FAIL,
   EDIT_USER_SUCCESS,
   SELECTED_USER,
-} from "../actions/User-Action/actionType";
+} from "../Actions/User-Action/actionType";
 
 const initialState = {
   error: false,

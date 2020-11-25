@@ -15,7 +15,7 @@ import {
   EDIT_BUNDLE_PRODUCT_FAIL,
   EDIT_BUNDLE_PRODUCT_SUCCESS,
   SELECTED_BUNDLE_PRODUCT,
-} from "../actions/BundleProduct-Action/actionType";
+} from "../Actions/BundleProduct-Action/actionType";
 
 const initialState = {
   error: false,

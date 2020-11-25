@@ -1,5 +1,5 @@
 import ApolloClient from "apollo-boost";
-import { isAuthenticated } from "../authentication/authentication";
+import { isAuthenticated } from "../Authentication/authentication";
 
 // Apollo Cient Set-Up
 const client = new ApolloClient({

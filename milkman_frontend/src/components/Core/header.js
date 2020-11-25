@@ -11,8 +11,8 @@ import {
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { isAuthenticated } from "../../authentication/authentication";
-import { logoutUser } from "../../redux/actions/Auth-Action/authAction";
+import { isAuthenticated } from "../../Authentication/authentication";
+import { logoutUser } from "../../Redux/Actions/Auth-Action/authAction";
 
 const Header = (props) => {
   const [isOpen, setIsOpen] = useState(false);

@@ -15,7 +15,7 @@ import {
   EDIT_ROLE_FAIL,
   EDIT_ROLE_SUCCESS,
   SELECTED_ROLE,
-} from "../actions/Role-Action/actionType";
+} from "../Actions/Role-Action/actionType";
 
 const initialState = {
   error: false,
